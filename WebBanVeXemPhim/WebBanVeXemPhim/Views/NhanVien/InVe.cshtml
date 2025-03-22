@@ -1,0 +1,309 @@
+﻿@{
+    ViewData["Title"] = "Giải mã & In Vé";
+    Layout = null;
+}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    h1, h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0 20px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+        }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.2s;
+    }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+    #ticket {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px dashed #333;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: left;
+    }
+
+    .ticket-item {
+        margin-bottom: 12px;
+        font-size: 16px;
+        color: #555;
+    }
+
+        .ticket-item strong {
+            color: #000;
+        }
+
+    .print-btn {
+        background: #28a745;
+        margin-top: 15px;
+    }
+
+        .print-btn:hover {
+            background: #218838;
+        }
+
+   media print {
+        body
+
+    {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    #allTickets, #ticket {
+        width: 105mm; /* Kích thước A6: 105mm x 148mm */
+        height: 148mm;
+        padding: 15px;
+        border: 1px dashed #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: auto; /* Căn giữa */
+        page-break-after: always;
+    }
+
+    .ticket {
+        width: 100%;
+        border: 1px dashed #333;
+        padding: 15px;
+        margin: 0;
+        box-sizing: border-box;
+        page-break-after: always;
+    }
+}
+
+</style>
+
+<div class="container">
+    <div id="check_ve">
+        <h1>Giải mã & In Vé</h1>
+        <input type="text" id="encodedInput" placeholder="Nhập mã Code 128">
+        <button onclick="decodeAndShowTicket()">Xem Thông Tin Vé</button>
+    </div>
+
+    <div id="ticket" style="display: none;">
+        <h2>Thông Tin Vé</h2>
+        <div class="ticket-item"><strong>Mã Vé:</strong> <span id="MaVe"></span></div>
+        <div class="ticket-item"><strong>Khách Hàng:</strong> <span id="MaKhachHang"></span></div>
+        <div class="ticket-item"><strong>Phim:</strong> <span id="TenPhim"></span></div>
+        <div class="ticket-item"><strong>Ghế Ngồi:</strong> <span id="SoGhe"></span></div>
+        <div class="ticket-item"><strong>Phòng:</strong> <span id="SoPhong"></span></div>
+        <div class="ticket-item"><strong>Giờ Chiếu:</strong> <span id="GioChieu"></span></div>
+        <div class="ticket-item"><strong>Ngày Chiếu:</strong> <span id="NgayChieu"></span></div>
+        <div class="ticket-item"><strong>Giá Vé:</strong> <span id="GiaVe"></span> VNĐ</div>
+        <div style="text-align: center; margin-top: 20px;">
+            <svg id="barcode"></svg>
+        </div>
+        <button class="print-btn" onclick="printAllSeats()">In Vé</button>
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+
+<script>
+    window.onafterprint = function () {
+        // Hiển thị lại phần nhập mã và vé
+        $("#ticket").show();
+    };
+
+    function decodeAndShowTicket() {
+        const encoded = $("#encodedInput").val();
+        if (!encoded) {
+            alert("Vui lòng nhập mã!");
+            return;
+        }
+        // Giải mã mã Code128
+        let decoded = "";
+        for (let i = 0; i < encoded.length; i += 2) {
+            let asciiCode = parseInt(encoded.substring(i, i + 2));
+            decoded += String.fromCharCode(asciiCode);
+        }
+
+        // Tách kết quả theo "_"
+        let result = decoded.split("_");
+        if (result.length === 2) {
+            const maKhach = result[0];
+            const maLichChieu = result[1];
+
+            // Gửi yêu cầu AJAX lấy thông tin vé
+            $.ajax({
+                url: '/NhanVien/Inve',
+                type: 'POST',
+                data: { MaKhach: maKhach, MaLichChieu: maLichChieu },
+                success: function (response) {
+                    if (response.success) {
+                        // Giả sử chỉ có một lịch chiếu cho một mã khách
+                        const ve = response.data[0];  // Lấy vé đầu tiên trong danh sách
+
+                        $("#MaVe").text(ve.maLichChieu);
+                        $("#MaKhachHang").text(maKhach);
+                        $("#TenPhim").text(ve.tenPhim);
+                        $("#SoGhe").text(ve.soGhe);
+                        $("#SoPhong").text(ve.soPhong);
+                        $("#GioChieu").text(ve.gioChieu);
+                        $("#NgayChieu").text(formatDate(ve.ngayChieu));
+                        $("#GiaVe").text(ve.giaVe.toLocaleString('vi-VN'));
+                        let barcode = `${maKhach}_${maLichChieu}`;
+                        let encoded = encodeToNumbers(barcode);
+                        JsBarcode("#barcode", encoded, {
+                            format: "CODE128",
+                            lineColor: "#000",
+                            width: 2,
+                            height: 50,
+                            displayValue: true
+                        });
+                        // Hiển thị vé
+                        $("#check_ve").hide();
+                        $("#ticket").show();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("Có lỗi xảy ra khi lấy thông tin vé!");
+                }
+            });
+
+
+
+
+        } else {
+            alert("Mã không hợp lệ!");
+        }
+    }
+    function printAllSeats() {
+        const soGhe = $("#SoGhe").text();
+        const gheList = soGhe.split(", ");
+        const maVe = $("#MaVe").text();
+        const maKhach = $("#MaKhachHang").text();
+        const tenPhim = $("#TenPhim").text();
+        const soPhong = $("#SoPhong").text();
+        const gioChieu = $("#GioChieu").text();
+        const ngayChieu = $("#NgayChieu").text();
+        const giaVe = $("#GiaVe").text();
+
+        // Xóa vé cũ nếu có
+        $("#allTickets").remove();
+
+        // Tạo container cho tất cả vé
+        let allTickets = $("<div id='allTickets'></div>");
+
+        gheList.forEach((ghe, index) => {
+            let ticketHTML = `
+                    <div class="ticket" style="border: 1px dashed #333; padding: 15px; margin: 15px 0; page-break-after: always;">
+                        <h2>Thông Tin Vé</h2>
+                        <div class="ticket-item"><strong>Mã Vé:</strong> ${maVe}</div>
+                        <div class="ticket-item"><strong>Khách Hàng:</strong> ${maKhach}</div>
+                        <div class="ticket-item"><strong>Phim:</strong> ${tenPhim}</div>
+                        <div class="ticket-item"><strong>Ghế Ngồi:</strong> ${ghe}</div>
+                        <div class="ticket-item"><strong>Phòng:</strong> ${soPhong}</div>
+                        <div class="ticket-item"><strong>Giờ Chiếu:</strong> ${gioChieu}</div>
+                        <div class="ticket-item"><strong>Ngày Chiếu:</strong> ${ngayChieu}</div>
+                        <div class="ticket-item"><strong>Giá Vé:</strong> ${giaVe} VNĐ</div>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <svg id="barcode_${index}"></svg>
+                        </div>
+                    </div>`;
+
+            allTickets.append(ticketHTML);
+        });
+
+        // Thêm tất cả vé vào trang
+        $("body").append(allTickets);
+
+        // Tạo mã vạch cho từng vé
+        gheList.forEach((ghe, index) => {
+            let barcode = `${maKhach}_${maVe}_${ghe}`;
+            let encoded = encodeToNumbers(barcode);
+            JsBarcode(`#barcode_${index}`, encoded, {
+                format: "CODE128",
+                lineColor: "#000",
+                width: 2,
+                height: 50,
+                displayValue: true
+            });
+        });
+
+        // Ẩn phần nhập mã và vé cũ để tránh in kèm
+        $("#check_ve, #ticket").hide();
+
+        // Gọi lệnh in
+        window.print();
+
+        // Sau khi in, xóa vé in để giao diện gọn lại (tuỳ chọn)
+        $("#allTickets").remove();
+    }
+
+
+
+    // Hàm format ngày tháng từ JSON
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('vi-VN');
+    }
+    function encodeToNumbers(input) {
+        let encoded = "";
+        for (let i = 0; i < input.length; i++) {
+            encoded += input.charCodeAt(i).toString();
+        }
+        return encoded;
+    }
+</script>

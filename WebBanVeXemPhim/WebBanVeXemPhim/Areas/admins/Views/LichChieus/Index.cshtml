@@ -1,0 +1,265 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.LichChieu>
+
+@{
+    ViewData["Title"] = "Quản lý Lịch Chiếu";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Quản lý Lịch Chiếu</h1>
+
+<p>
+    <button style="font-size:14px" class="btn btn-success btn-sm btnOn" onclick="loadSidebar_create()">
+        Thêm Lịch Chiếu <i class="fas fa-plus"></i>
+    </button>
+    <form method="get" asp-action="Index">
+        <input type="text" name="searchString" placeholder="Nhập tên phim..." class="form-control"
+               style="width: 300px; display: inline-block; margin-right: 10px;"
+               value="@ViewBag.SearchString">
+        <input class="form-control" type="date" name="searchDate" style="width: 200px; display: inline-block; margin-right: 10px;" />
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+
+    </form>
+</p>
+
+<div class="container">
+    <div id="main-content" class="content full-width">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Phim</th>
+                    <th>Phòng</th>
+                    <th>Ngày Chiếu</th>
+                    <th>Giờ Chiếu</th>
+                    <th>Giá Vé</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.MaLichChieu">
+                        <td>@item.MaPhimNavigation.TenPhim</td>
+                        <td>@item.MaPhongNavigation.TenPhong</td>
+                        <td>@item.NgayChieu.ToString("dd/MM/yyyy")</td>
+                        <td>@item.GioChieu</td>
+                        <td>@item.GiaVe.ToString("N0") đ</td>
+                        <td>
+                            <button class="btn btn-info btn-sm btnOn" onclick="loadSidebar(@item.MaLichChieu)">
+                                Xem <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm btnOn" onclick="loadSidebar_edit(@item.MaLichChieu)">
+                                Sửa <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteLichChieu(@item.MaLichChieu)">
+                                Xóa <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="sidebar-container"></div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.TotalPages > 1)
+            {
+                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+
+                if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-searchString="@ViewBag.SearchString" asp-route-searchDate="@ViewBag.SearchDate">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString" asp-route-searchDate="@ViewBag.SearchDate">@i</a>
+                    </li>
+                }
+
+                if (endPage < ViewBag.TotalPages)
+                {
+                    @if (endPage < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages" asp-route-searchString="@ViewBag.SearchString" asp-route-searchDate="@ViewBag.SearchDate">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+<form id="deleteForm">
+    @Html.AntiForgeryToken()
+</form>
+<style>
+
+    .container {
+        display: flex;
+        transition: 0.3s;
+    }
+
+    /* Nội dung chính ban đầu chiếm toàn bộ màn hình */
+    .content {
+        flex: 1;
+        transition: 0.3s;
+    }
+
+        /* Khi sidebar mở, nội dung chính thu nhỏ */
+        .content.shrink {
+            flex: 0.7; /* Điều chỉnh theo ý muốn */
+        }
+
+    /* Sidebar ẩn bên phải */
+    .hienthi {
+        position: fixed;
+        top: 100px;
+        right: 0; /* Cố định ở bên phải */
+        width: 29%; /* Chiều rộng khi mở */
+        height: 90vh;
+        background-color: #f8f9fa;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s ease-in-out, opacity 0.3s;
+        padding: 20px;
+        opacity: 0;
+        transform: translateX(100%); /* Đẩy sidebar ra khỏi màn hình bên phải */
+    }
+
+        /* Khi sidebar mở */
+        .hienthi.active {
+            transform: translateX(0); /* Trả sidebar về vị trí ban đầu */
+            opacity: 1;
+        }
+
+    /* Nút đóng sidebar */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+</style>
+<button hidden class="btn btn-toggle toggle-sidebar" id="btnSidebar">
+    <i class="gg-menu-right"></i>
+</button>
+<script>
+    function loadSidebar(lichChieuId) {
+        $.ajax({
+            url: '/admins/LichChieus/Details/' + lichChieuId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+
+    function loadSidebar_create() {
+        $.ajax({
+            url: '/admins/LichChieus/Create',
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+    function submitCreateForm() {
+        var formData = $("#createForm").serialize(); // Lấy dữ liệu form
+       console.log("Dữ liệu form:", formData); // ĐÚNG
+
+        $.ajax({
+            url: '/admins/LichChieus/Create',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                  console.log("Dữ liệu frm:", formData); // ĐÚNG
+
+                    location.reload(); // Reload lại trang để cập nhật danh sách
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi thêm lịch chiếu!");
+            }
+        });
+    }
+
+    function loadSidebar_edit(lichChieuId) {
+        $.ajax({
+            url: '/admins/LichChieus/Edit/' + lichChieuId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+
+    function deleteLichChieu(lichChieuId) {
+        if (!confirm("Bạn có chắc chắn muốn xóa lịch chiếu này không?")) return;
+        let token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '/admins/LichChieus/DeleteConfirmed',
+            type: 'POST',
+            data: { id: lichChieuId, __RequestVerificationToken: token },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $("#row_" + lichChieuId).remove();
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi xóa lịch chiếu!");
+            }
+        });
+    }
+
+    function closeSidebar() {
+        $("#hienthi").removeClass("active"); // Ẩn sidebar
+        $("#main-content").removeClass("shrink"); // Mở rộng lại nội dung chính
+        document.getElementById("btnSidebar").disabled = false;
+        document.getElementById("btnSidebar").click();
+
+    }
+
+    //ẩn sidebar
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btnOn").forEach(button => {
+            button.addEventListener("click", function () {
+                let btnSidebar = document.getElementById("btnSidebar");
+
+                if (btnSidebar && !btnSidebar.disabled) {
+                    btnSidebar.click();
+                    btnSidebar.disabled = true;
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Đăng Ký";
+}
+
+<h2>Đăng Ký</h2>
+
+<form id="registerForm">
+    <label for="username">Tên người dùng:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Mật khẩu:</label>
+    <input type="password" id="password" name="password" required>
+
+    <button type="submit">Đăng Ký</button>
+</form>
+
+<p id="message"></p>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        let formData = {
+            username: document.getElementById("username").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        };
+
+        let response = await fetch("/DangKy/DangKy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        });
+
+        let result = await response.text();
+        document.getElementById("message").innerText = result;
+    });
+</script>

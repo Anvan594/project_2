@@ -1,0 +1,29 @@
+﻿@model WebBanVeXemPhim.Models.LichChieu
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">&times;</button>
+    <h3>Chi tiết lịch chiếu</h3>
+    @if (Model != null)
+    {
+        <p><strong>Phim:</strong> @Model.MaPhimNavigation.TenPhim</p>      
+        <p><strong>Phòng chiếu:</strong> @Model.MaPhongNavigation.TenPhong</p>
+        <p><strong>Ngày chiếu:</strong> @Model.NgayChieu.ToString("dd/MM/yyyy")</p>
+        <p><strong>Giờ chiếu:</strong> @Model.GioChieu.ToString("HH:mm")</p>
+        <p><strong>Giá vé:</strong> @Model.GiaVe.ToString("N0") VNĐ</p>
+        <p>
+            <strong>Trạng thái:</strong>
+            @if (Model.TrangThai == true)
+            {
+                <span style="color:green">Đang chiếu</span>
+            }
+            else
+            {
+                <span style="color:red">Đã kết thúc</span>
+            }
+        </p>
+    }
+    else
+    {
+        <p>Vui lòng chọn lịch chiếu để xem chi tiết</p>
+    }
+</div>

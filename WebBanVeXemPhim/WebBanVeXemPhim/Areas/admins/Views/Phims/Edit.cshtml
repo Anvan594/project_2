@@ -1,0 +1,113 @@
+﻿@model WebBanVeXemPhim.Models.Phim
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Sửa thông tin phim</h3>
+    <form asp-action="Edit" enctype="multipart/form-data">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaPhim" />
+
+        <div class="row">
+            <!-- Cột 1 -->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="TenPhim" class="control-label">Tên phim</label>
+                    <input asp-for="TenPhim" class="form-control" />
+                    <span asp-validation-for="TenPhim" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TheLoai" class="control-label">Thể loại</label>
+                    <input asp-for="TheLoai" class="form-control" />
+                    <span asp-validation-for="TheLoai" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DoTuoi" class="control-label">Độ tuổi</label>
+                    <select asp-for="DoTuoi" class="form-control">
+                        <option value="@Model.DoTuoi" selected>@if(Model.DoTuoi == "")
+                            {
+
+                                <span>-- Chọn độ tuổi --</span>
+                                
+                            }
+                            else
+                            {
+                                @Model.DoTuoi
+                            }
+                        </option>
+                        <option value="T13">T13</option>
+                        <option value="T16">T16</option>
+                        <option value="T18">T18</option>
+                        <option value="P">P</option>
+                    </select>
+                    <span asp-validation-for="DoTuoi" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="ThoiLuong" class="control-label">Thời lượng (phút)</label>
+                    <input asp-for="ThoiLuong" type="number" class="form-control" />
+                    <span asp-validation-for="ThoiLuong" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NgayKhoiChieu" class="control-label">Ngày khởi chiếu</label>
+                    <input asp-for="NgayKhoiChieu" type="date" class="form-control" />
+                    <span asp-validation-for="NgayKhoiChieu" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TrangThai" class="control-label">Trạng thái</label>
+                    <select asp-for="TrangThai" class="form-control">
+                        <option value="true">Hoạt động</option>
+                        <option value="false">Không hoạt động</option>
+                    </select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Cột 2 -->
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Poster" class="control-label">Ảnh poster</label>
+                    <input type="file" placeholder="@Model.Poster" name="PosterFile" class="form-control" accept="image/*" />
+                    <span asp-validation-for="Poster" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DaoDien" class="control-label">Đạo diễn</label>
+                    <input asp-for="DaoDien" class="form-control" />
+                    <span asp-validation-for="DaoDien" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DienVien" class="control-label">Diễn viên</label>
+                    <input asp-for="DienVien" class="form-control" />
+                    <span asp-validation-for="DienVien" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NgonNgu" class="control-label">Ngôn ngữ</label>
+                    <input asp-for="NgonNgu" class="form-control" />
+                    <span asp-validation-for="DaoDien" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="MoTa" class="control-label">Mô tả</label>
+                    <textarea asp-for="MoTa" class="form-control"></textarea>
+                    <span asp-validation-for="MoTa" class="text-danger"></span>
+                </div>
+
+                <!-- Nút lưu -->
+                <div class="form-group text-center" style="padding-top:20px">
+                    <input type="submit" value="Lưu" class="btn btn-primary" />
+                </div>
+
+            </div>
+        </div>
+
+       
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

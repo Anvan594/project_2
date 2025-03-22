@@ -1,0 +1,25 @@
+﻿@model WebBanVeXemPhim.Models.Phong
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Chi tiết phòng</h3>
+    @if (Model != null)
+    {
+        <p><strong>Tên phòng:</strong> @Model.TenPhong</p>
+        <p><strong>Sức chứa:</strong> @Model.SoLuongGhe</p>
+        <p>
+            <strong>Trạng thái:</strong> @if (Model.TrangThai == true)
+            {
+                <span style="color:green"> Đang hoạt động</span>
+            }
+            else
+            {
+                <span style="color:red">Ngừng hoạt động</span>
+            }
+        </p>
+    }
+    else
+    {
+        <p>Vui lòng chọn phòng để xem chi tiết</p>
+    }
+</div>

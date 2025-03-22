@@ -1,0 +1,65 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Controllers.HomeController>
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 text-center">
+    <h2 class="text-success">🎉 Thanh toán thành công! 🎉</h2>
+     @* <p>Cảm ơn <strong>@ViewBag.TenNguoiDung</strong> đã đặt vé tại hệ thống của chúng tôi.</p> *@
+
+    <div class="card mx-auto mt-4 shadow" style="max-width: 500px;">
+        <div class="card-body">
+            <h5 class="card-title text-primary">Vé Đã Đặt</h5>
+            <div class="container mt-4">
+                <h2>Bảng Bootstrap Cơ Bản</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên phim</th>
+                            <th>Ngày chiếu</th>
+                            <th>Giờ chiếu</th>
+                            <th>Thời Lượng</th>
+                            <th>Phòng chiếu</th>
+                            <th>Ghế ngồi</th>
+                            <th>Giá Vé</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int MaLichChieu = ViewBag.order.MaLichChieu;
+                            int dem=0;
+                            string dau = ", ";
+                        }
+                        @foreach(var o in ViewBag.order)
+                        {
+                            string soghe = "";
+                            decimal giave = 0;
+                            if (o.MaLichChieu==MaLichChieu)
+                            {
+                                giave = giave + o.GiaVe;
+                                soghe = o.SoGhe+dau+soghe;
+                            }else{
+                                dem = dem + 1;
+                                <tr>
+                                    <td>@dem</td>
+                                    <td>@o.TenPhim</td>
+                                    <td>@o.NgayChieu</td>
+                                    <td>@o.GioChieu</td>
+                                    <td>@o.ThoiLuong</td>
+                                    <td>@o.SoPhong</td>
+                                    <td>@soghe</td>
+                                    <td>@giave</td>
+                                </tr>
+                            }
+                            MaLichChieu = o.MaLichChieu;
+                        }
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+
+    <a href="/" class="btn btn-primary mt-4">Về trang chủ</a>
+</div>

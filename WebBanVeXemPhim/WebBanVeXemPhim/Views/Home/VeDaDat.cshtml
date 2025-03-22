@@ -1,0 +1,167 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Controllers.HomeController>
+@{
+    ViewData["Title"] = "Lịch sử mua vé";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int MaKhachHang = Context.Session.GetInt32("NguoiDung")??0;
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+    /* CSS để căn giữa box thông báo */
+    .center-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 20px 30px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+</style>
+<script>
+    function encodeToNumbers(text) {
+        let result = "";
+        for (let i = 0; i < text.length; i++) {
+            result += text.charCodeAt(i).toString(); // Chuyển ký tự thành số
+        }
+        return result;
+    }
+
+    function showBarcode(makhach,malichchieu) {
+        let macode = makhach + "_" + malichchieu
+        let encoded = encodeToNumbers(macode.toString()); // Mã hóa
+        console.log("Mã hóa:", encoded); // Kiểm tra trên console
+
+        JsBarcode("#barcode", encoded, {
+            format: "CODE128",
+            displayValue: true,
+            fontSize: 18
+        });
+    }
+
+
+</script>
+<div class="modal fade" id="barcodeModal" tabindex="-1" aria-labelledby="barcodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="barcodeModalLabel">🛒 Mã Vạch Của Bạn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <svg id="barcode"></svg>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+
+
+
+
+
+<div class="container mt-5">
+    @{
+        var orders = ViewBag.VeDaDat as IEnumerable<dynamic>;
+    }
+
+    @if (orders == null || !orders.Any())
+    {
+        <div class="center-box" style="width:300px">
+            <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
+            <h5 class="mt-1 text-danger">Bạn chưa mua vé!  </h5>
+            <a href="/" class="btn btn-primary px-4">Về trang chủ</a>
+        </div>
+    }
+    else
+    {
+        <div class="mt-4">
+            <div class="">
+                <div class="justify-content-lg-start mt-4">
+                    <a href="/" class="btn btn-primary px-4">Về trang chủ</a>
+                </div>
+                <h2 class="text-center text-primary">Lịch Sử Mua Vé </h2>
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Tên phim</th>
+                                <th>Ngày chiếu</th>
+                                <th>Giờ chiếu</th>
+                                <th>Thời lượng</th>
+                                <th>Phòng chiếu</th>
+                                <th>Ghế ngồi</th>
+                                <th>Giá vé</th>
+                                <th>Mã Vạch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                int dem = 1;
+                                // int currentMaLichChieu = -1;
+                                // string soghe = "";
+                                // decimal giave = 0;
+                                // string TenPhim = "";
+                                // DateOnly NgayChieu = default;
+                                // TimeOnly GioChieu = default;
+                                // int ThoiLuong = 0;
+                                // string SoPhong = "";
+                                // int MaVe = 0;
+                                // var tong = 0;
+
+                            }
+                            @foreach (var o in ViewBag.VeDaDat)
+                            {
+                                <tr>
+                                    <td>@dem</td>
+                                    <td>@o.TenPhim</td>
+                                    <td>@o.NgayChieu.ToString("dd/MM/yyyy")</td>
+                                    <td>@o.GioChieu</td>
+                                    <td>@o.ThoiLuong phút</td>
+                                    <td>@o.SoPhong</td>
+                                    <td>@o.SoGhe</td>
+                                    <td class="text-danger fw-bold">@o.GiaVe.ToString("N0") VNĐ</td>
+                                     <td>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#barcodeModal" onclick="showBarcode(@MaKhachHang,@o.MaLichChieu)">
+                                             📦 Hiện Mã Vạch
+                                         </button>
+                                     </td>
+
+                                </tr>
+                                dem++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("VeDaDat", new { page = ViewBag.CurrentPage - 1 })">Previous</a>
+                        </li>
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("VeDaDat", new { page = i })">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                            <a class="page-link" href="@Url.Action("VeDaDat", new { page = ViewBag.CurrentPage + 1 })">Next</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    }
+</div>
+
+
+

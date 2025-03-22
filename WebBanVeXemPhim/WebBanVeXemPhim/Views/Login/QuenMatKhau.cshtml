@@ -1,0 +1,201 @@
+﻿@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="vi">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Quên Mật Khẩu</title>
+		<!-- Google Font -->
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+		<!-- Bootstrap 5 CSS -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Font Awesome (nếu cần) -->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+		<style>
+			/* Định dạng nền giống trang đăng nhập */
+			body {
+				font-family: 'Inter', sans-serif;
+				background: url('/admin.png') no-repeat center center fixed;
+				background-size: cover;
+				height: 100vh;
+				position: relative;
+			}
+
+			/* Lớp phủ làm mờ nền */
+			.overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+			}
+
+			/* Container cho form Quên Mật Khẩu */
+			.forgot-container {
+				position: relative;
+				z-index: 10;
+				min-width: 400px;
+				max-width: 450px;
+			}
+
+			.forgot-card {
+				padding: 30px;
+				border-radius: 10px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+				background: white;
+			}
+
+			.btn-primary {
+				background-color: #007bff;
+				border-color: #007bff;
+			}
+
+			.btn-primary:hover {
+				background-color: #0056b3;
+			}
+
+			.btn-success {
+				background-color: #28a745;
+				border-color: #28a745;
+			}
+
+			.btn-danger {
+				background-color: #dc3545;
+				border-color: #dc3545;
+			}
+
+			.form-control {
+				border-radius: 8px;
+			}
+
+			/* Spinner loading */
+		</style>
+	</head>
+	<body>
+		<div class="overlay"></div>
+		<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+			<div class="forgot-container">
+				<div class="card forgot-card">
+					<h3 class="text-center mb-4">Quên Mật Khẩu</h3>
+					<!-- Bước 1: Nhập Email -->
+					<div id="step1">
+						<div class="mb-3">
+							<label for="email" class="form-label">Email của bạn:</label>
+							<input type="email" id="email" class="form-control" placeholder="Nhập email" required>
+						</div>
+					<button class="btn btn-primary w-100" id="GuiMaButton" onclick="sendResetCode()">Gửi mã xác nhận</button>
+					<button class="btn btn-primary w-100" id="loadingButton" style="display: none;" disabled>
+						<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						Đang gửi mã...
+					</button>
+					</div>
+					<!-- Bước 2: Nhập mã xác nhận -->
+					<div id="step2" style="display: none;">
+						<div class="mb-3">
+							<label for="resetCode" class="form-label">Nhập mã xác nhận:</label>
+							<input type="text" id="resetCode" class="form-control" placeholder="Nhập mã 6 số" required>
+						</div>
+					<button class="btn btn-success w-100" id="XacNhanButton" onclick="verifyCode()">Xác nhận</button>
+					<button class="btn btn-success w-100" id="loadingXNButton" style="display: none;" disabled>
+						<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						Đang xác nhận...
+					</button>
+					</div>
+					<!-- Bước 3: Đặt lại mật khẩu -->
+					<div id="step3" style="display: none;">
+						<div class="mb-3">
+							<label for="newPassword" class="form-label">Mật khẩu mới:</label>
+							<input type="password" id="newPassword" class="form-control" placeholder="Nhập mật khẩu mới" required>
+						</div>
+						<button class="btn btn-danger w-100" onclick="resetPassword()">Đặt lại mật khẩu</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			async function sendResetCode() {
+				let email = document.getElementById("email").value;
+				if (!email) return alert("Vui lòng nhập email.");
+				// Hiển thị loading (nếu cần)
+				document.getElementById("GuiMaButton").style.display = "none";
+				document.getElementById("loadingButton").style.display = "block";
+				let response = await fetch("/quenmatkhau", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						email
+					})
+				});
+				let result = await response.text();
+				alert(result);
+				if (response.ok) {
+					document.getElementById("step1").style.display = "none";
+					document.getElementById("step2").style.display = "block";
+					// Mở Gmail trong tab mới
+					window.open("https://mail.google.com", "_blank");
+				}
+			}
+			async function verifyCode() {
+				let email = document.getElementById("email").value;
+				let code = document.getElementById("resetCode").value;
+    
+				if (!code) return alert("Vui lòng nhập mã xác nhận.");
+
+				document.getElementById("XacNhanButton").style.display = "none";
+				document.getElementById("loadingXNButton").style.display = "block";
+
+				let response = await fetch("/xacnhanma", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, code })
+				});
+
+				let result = await response.text();
+				alert(result);
+
+				if (response.ok) {
+					document.getElementById("step2").style.display = "none";
+					document.getElementById("step3").style.display = "block";
+				}else{
+				document.getElementById("XacNhanButton").style.display = "block";
+				document.getElementById("loadingXNButton").style.display = "none";
+				}
+			}
+			async function resetPassword() {
+				let email = document.getElementById("email").value;
+				let code = document.getElementById("resetCode").value;
+				let newPassword = document.getElementById("newPassword").value;
+				if (newPassword.length < 6) {
+					return alert("Mật khẩu phải có ít nhất 6 ký tự.");
+				}
+				try {
+					let response = await fetch("/doimatkhau", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify({
+							email,
+							code,
+							newPassword
+						})
+					});
+					let result = await response.text();
+					alert(result);
+					if (response.ok) {
+						setTimeout(() => {
+							window.location.href = "/Login/index";
+						}, 500);
+					}
+				} catch (error) {
+					alert("Có lỗi xảy ra. Vui lòng thử lại!");
+				} finally {
+					document.getElementById("loading").style.display = "none";
+				}
+			}
+		</script>
+	</body>
+</html>

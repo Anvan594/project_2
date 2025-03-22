@@ -1,0 +1,100 @@
+﻿<div class="container mt-4">
+    <h2 class="text-center mb-4">Báo cáo thống kê</h2>
+
+    <!-- Thống kê nhanh -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Doanh thu hôm nay</h5>
+                    <p class="card-text display-6 fw-bold">@(((decimal)ViewData["RevenueToday"]).ToString("N0")) VNĐ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Số vé bán hôm nay</h5>
+                    <p class="card-text display-6 fw-bold">@ViewData["TicketsSoldToday"] vé</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card p-3 mt-4 shadow-sm">
+        <h5 class="mb-3 text-primary">Lọc báo cáo</h5>
+        <form method="get" action="BaoCao/XuatBaoCao" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label class="form-check-label">
+                    <input type="radio" name="kieuBaoCao" value="ngay" checked class="form-check-input"> Theo ngày
+                </label>
+                <input type="date" name="ngay" class="form-control">
+            </div>
+            <div class="col-auto">
+                <label class="form-check-label">
+                    <input type="radio" name="kieuBaoCao" value="thang" class="form-check-input"> Theo tháng
+                </label>
+                <input type="month" name="thangNam" class="form-control">
+            </div>
+            <div class="col-auto">
+                <label class="form-check-label">
+                    <input type="radio" name="kieuBaoCao" value="nam" class="form-check-input"> Theo năm
+                </label>
+                <input type="number" name="nam" min="2000" max="2100" class="form-control">
+            </div>
+            <div class="col-auto">
+                <label class="form-check-label">
+                    <input type="radio" name="kieuBaoCao" value="khoangNgay" class="form-check-input"> Từ ngày - đến ngày
+                </label>
+                <div class=" d-flex">
+                    <input type="date" name="tuNgay" class="form-control" style="margin-right:10px">
+                    <input type="date" name="denNgay" class="form-control">
+                </div>
+
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Xuất báo cáo</button>
+            </div>
+        </form>
+    </div>
+    <!-- Bảng top 5 phim bán chạy -->
+    <div class="mt-4">
+        <h4 class="text-primary">Top 5 phim bán chạy trong tháng</h4>
+        <table class="table table-striped table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh</th>
+                    <th>Tên phim</th>
+                    <th>Đạo diễn</th>
+                    <th>Số vé bán</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.TopPhim != null)
+                {
+                    int stt = 1;
+                    foreach (var movie in ViewBag.TopPhim)
+                    {
+                        <tr>
+                            <td>@stt</td>
+                            <td><img src="~/images/@movie.AnhPhim" alt="@movie.TenPhim" width="80" class="rounded shadow-sm"></td>
+                            <td>@movie.TenPhim</td>
+                            <td>@movie.DaoDien</td>
+                            <td class="fw-bold text-success">@movie.SoVe</td>
+                        </tr>
+                        stt++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Không có dữ liệu</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bộ lọc báo cáo -->
+    
+</div>

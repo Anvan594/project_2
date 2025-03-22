@@ -1,0 +1,1018 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.Phim>
+@{
+    ViewData["Title"] = "Trang Chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dachay = Context.Session.GetInt32("dachay");
+    int MaKhachHang = Context.Session.GetInt32("NguoiDung")??0;
+}
+
+<style>
+    /* Đảm bảo nền chính và nền phần phim có cùng màu */
+    .container.mt-4,
+    .container.mt-4 .movie-section {
+        background-color: #f8f9fa !important; /* Màu nền giống nhau */
+        border: none; /* Xóa viền nếu có */
+    }
+
+    /* Đảm bảo không có đường viền hay hiệu ứng bóng */
+    .movie-card {
+        background-color: transparent !important;
+        box-shadow: none !important; /* Loại bỏ bóng nếu có */
+        border: none !important; /* Loại bỏ viền nếu có */
+    }
+    .carousel-item {
+    transition: transform 1s ease-out, opacity 1s ease-in-out;
+}
+    /* Hiệu ứng chuyển slide mượt mà */
+/*     .carousel-fade .carousel-item {
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+        .carousel-fade .carousel-item.active {
+            opacity: 1;
+        } */
+
+    /* Điều chỉnh hình ảnh */
+    .banner-img {
+        object-fit: cover;
+        height: 450px; /* Điều chỉnh kích thước theo trang */
+        border-radius: 12px;
+    }
+
+    .container {
+        max-width: 80%;
+        margin: 0 auto; /* Căn giữa */
+    }
+    /* Đảm bảo poster có cùng tỷ lệ */
+    .movie-poster {
+        position: relative;
+        overflow: hidden;
+        border-radius: 25px;
+    }
+
+        .movie-poster img {
+            width: 100%;
+            height: 400px; /* Điều chỉnh nếu cần */
+            object-fit: cover;
+            transition: all 0.3s ease-in-out;
+        }
+
+    .movie-card {
+        max-width: 250px
+    }
+
+        .movie-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+    /* Hiệu ứng làm tối khi hover */
+    .movie-poster::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 8px;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0); /* Ban đầu trong suốt */
+        transition: background 0.3s ease-in-out;
+    }
+
+    .play-icon {
+        font-size: 50px;
+        color: white;
+        border-radius: 50%;
+        padding: 15px;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        z-index: 2;
+    }
+
+    /* Hiển thị nút play khi hover */
+    .movie-poster:hover .play-icon {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    /* Khi hover, làm tối nền */
+    .movie-poster:hover::after {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Badge độ tuổi */
+    .badge-age {
+        background-color: #ffc107; /* Vàng */
+        color: #000;
+        padding: 6px 12px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 6px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .btn-buy-ticket {
+        width: 100%; /* Đảm bảo nút luôn rộng full */
+        background-color: #007bff; /* Màu xanh */
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-buy-ticket:hover {
+            color: black;
+            background-color: #007bff; /* Màu xanh */
+        }
+
+    .movie-title:hover {
+        color: #ff5733 !important; /* Đổi màu thành cam khi hover */
+        text-shadow: 0px 0px 8px rgba(255, 87, 51, 0.7); /* Hiệu ứng phát sáng */
+    }
+
+    .tab-films > li.active {
+        border-bottom: 4px solid transparent;
+        border-image: linear-gradient(to right, #39adf0 0%, #075fa3 100%);
+        border-image-slice: 1;
+        border-width: 0px 0px 4px 0px;
+    }
+
+        .tab-films > li.active a h1 {
+            color: #03599d;
+        }
+
+    .nav-tabs a {
+        display: block;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+        .nav-tabs a h1 {
+            font-size: 35px;
+            color: black;
+            padding:0 .8rem .2rem .8rem;
+        }
+
+    .ngayHienThi.active {
+        border-bottom: 4px solid transparent;
+        border-image: linear-gradient(to right, #39adf0 0%, #075fa3 100%);
+        border-image-slice: 1;
+        border-width: 0px 0px 4px 0px;
+    }
+
+        .ngayHienThi.active span {
+            color: #03599d;
+        }
+
+    .seat-selection {
+    display: flex;
+    flex-direction: column; /* Xếp hàng dọc theo thứ tự */
+    gap: 10px; /* Khoảng cách giữa các hàng */
+}
+
+.seat-row {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các ghế */
+}
+
+.seat {
+    color:white;
+    width: 45px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-color:darkgrey;
+    border: 1px solid #666;
+    cursor: pointer;
+    border-radius:5px;
+}
+.seat_vip{
+    background-color:blueviolet;
+}
+.seat:hover {
+    background-color:dimgray;
+}
+/* Định dạng ghế thường */
+.seat {
+    width: 45px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #666;
+    color: white;
+    cursor: pointer;
+    position: relative; /* Để hiển thị dấu X */
+}
+
+
+/* Ghế đã đặt */
+.seat.booked {
+    background-color: red;
+    cursor: not-allowed;
+    position: relative;
+}
+
+/* Ghế chờ thanh toán */
+.seat.pending {
+    background-color: darkorange;
+}
+.seat.booked {
+    pointer-events: none; /* Vô hiệu hóa click */
+    opacity: 0.8; /* Làm mờ ghế đã đặt để người dùng dễ nhận biết */
+    cursor: not-allowed; /* Hiển thị biểu tượng cấm click */
+}
+
+
+/* Nếu muốn vẽ dấu X chéo qua ghế */
+.seat.booked::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    top: 50%;
+    left: 0;
+    transform: rotate(45deg);
+}
+
+.seat.booked::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    top: 50%;
+    left: 0;
+    transform: rotate(-45deg);
+}
+.seat.selected {
+    background-color: green;
+    color: white;
+}
+</style>
+<script>
+    function DangNhap() {
+        alert("Bạn cần đăng nhập để đặt vé!");
+        window.location.href = "/Login/Index"; // Chuyển hướng đến trang đăng nhập
+        return;
+    }
+
+    function openVideoModal(videoUrl, movieTitle) {
+        var videoModal = new bootstrap.Modal(document.getElementById('videoModal'), {
+            keyboard: false
+        });
+
+        var iframeElement = document.getElementById("youtubeIframe");
+
+        // Lấy ID video từ link YouTube
+        let videoId = extractYouTubeId(videoUrl);
+        if (videoId) {
+            iframeElement.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModal.show();
+        }
+
+        // Khi modal đóng, reset iframe để dừng video
+        document.getElementById("videoModal").addEventListener('hidden.bs.modal', function () {
+            iframeElement.src = "";
+        });
+        var modalTitleElement = document.getElementById("modal_title");
+
+        // Cập nhật tiêu đề phim trong modal
+        modalTitleElement.innerText = "Trailer - " + movieTitle;
+    }
+
+    // Hàm trích xuất ID từ link YouTube (Hỗ trợ cả dạng dài & rút gọn)
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+
+
+    // Hàm trích xuất ID từ link YouTube
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+    function showMovies(section) {
+        // Ẩn tất cả các phần
+        document.querySelectorAll('.movie-section').forEach(section => section.classList.add('d-none'));
+
+        // Hiển thị phần được chọn
+        document.getElementById(section).classList.remove('d-none');
+
+        // Xóa class 'active' khỏi tất cả các tab
+        document.querySelectorAll('.tab-films li').forEach(tab => tab.classList.remove('active'));
+
+        // Thêm class 'active' vào tab được nhấn
+        if (section === 'comingSoon') {
+            document.querySelector('.tab-films li:nth-child(1)').classList.add('active');
+        } else if (section === 'nowShowing') {
+            document.querySelector('.tab-films li:nth-child(2)').classList.add('active');
+        } else {
+            document.querySelector('.tab-films li:nth-child(3)').classList.add('active');
+        }
+    }
+document.addEventListener("DOMContentLoaded", function () {
+    // Khi bấm nút "MUA VÉ", tự động chọn và click vào ngày đầu tiên có suất chiếu
+    document.querySelectorAll('.btn-buy-ticket').forEach(button => {
+        button.addEventListener("click", function () {
+            var MaPhim = this.getAttribute("data-phim-id"); // Lấy mã phim từ button
+            var danhSachNgay = document.querySelectorAll(`.ngay-chieu[data-phim-id="${MaPhim}"]`); // Lấy danh sách ngày chiếu theo phim
+
+            if (danhSachNgay.length > 0) {
+                var ngayDauTien = danhSachNgay[0]; // Lấy phần tử ngày đầu tiên
+                console.log("Mở modal phim:", MaPhim, "Click vào ngày:", ngayDauTien.getAttribute("data-ngay"));
+
+                ngayDauTien.click(); // 🔥 Tự động click vào ngày đầu tiên
+            } else {
+                console.log("Không có ngày chiếu nào cho phim:", MaPhim);
+            }
+        });
+    });
+});
+
+
+
+    function ClickNgay(MaPhim, Ngaychieu) {
+        // Lấy modal tương ứng với phim đang mở
+        let modal = document.querySelector(`#ticketModal_${MaPhim}`);
+        if (!modal) {
+            console.warn(`Không tìm thấy modal cho MaPhim: ${MaPhim}`);
+            return;
+        }
+
+        // Bỏ class active ở tất cả các ngày trong modal đó
+        modal.querySelectorAll(".ngayHienThi").forEach(li => li.classList.remove("active"));
+
+        // Thêm class active vào ngày được click
+        let selectedDay = modal.querySelector(`.ngay-${Ngaychieu}`);
+        if (selectedDay) {
+            selectedDay.classList.add("active");
+        } else {
+            console.warn(`Không tìm thấy phần tử ngày: ngay-${Ngaychieu}`);
+        }
+
+        console.log("Ngày được click:", Ngaychieu);
+
+        // Ẩn tất cả suất chiếu trong modal đó
+        modal.querySelectorAll('.gio-chieu').forEach(el => el.classList.add('d-none'));
+
+        // Hiển thị suất chiếu có cùng ngày
+        let elements = modal.querySelectorAll(`.ngay-${Ngaychieu}`);
+        if (elements.length > 0) {
+            elements.forEach(el => el.classList.remove('d-none'));
+            console.log("Hiển thị thành công:", elements);
+        } else {
+            console.warn("Không tìm thấy suất chiếu cho ngày:", Ngaychieu);
+            
+        }
+    }
+
+    function openBookingModal(MaLichChieu) {
+        var bookingModalElement = document.getElementById("bookingModal_" + MaLichChieu);
+
+        var bookingModal = new bootstrap.Modal(bookingModalElement);
+        bookingModal.show();
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+    let totalPrices = {}; // Lưu tổng tiền theo từng lịch chiếu
+
+    document.querySelectorAll(".seat").forEach(seat => {
+        seat.addEventListener("click", function () {
+            // Ngăn chặn click vào ghế đã đặt
+            if (this.classList.contains("booked")) {
+                alert("Ghế này đã được đặt. Vui lòng chọn ghế khác.");
+                return;
+            }
+            if (this.classList.contains("new_booked")) {
+                alert("Ghế này đang chờ thanh toán. Vui lòng chọn ghế khác.");
+                return;
+            }
+            let price = parseInt(this.getAttribute("data-price")) || 0;
+
+            if (this.classList.contains("seat_vip")) {
+                price += 5000; // Cộng thêm 5000 cho ghế VIP
+            }
+
+            
+            let seatSelection = this.closest(".seat-selection");
+            let maLichChieu = seatSelection ? seatSelection.getAttribute("data-malichchieu") : "default";
+            let totalPriceEl = document.querySelector(`.totalPrice_${maLichChieu}`);
+
+            if (totalPriceEl) {
+                if (!totalPrices[maLichChieu]) {
+                    totalPrices[maLichChieu] = 0;
+                }
+
+                // Đảo trạng thái ghế: Chọn thì cộng tiền, bỏ chọn thì trừ tiền
+                if (this.classList.contains("selected")) {
+                    totalPrices[maLichChieu] -= price;
+                    this.classList.remove("selected");
+                    this.style.backgroundColor = this.classList.contains("seat_vip") ? "blueviolet" : "darkgrey";
+                } else {
+                    totalPrices[maLichChieu] += price;
+                    this.classList.add("selected");
+                    this.style.backgroundColor = "green"; // Đổi màu ghế khi được chọn
+                }
+
+                totalPriceEl.innerText = totalPrices[maLichChieu].toLocaleString() + " VNĐ";
+            }
+        });
+    });
+
+    // Reset trạng thái khi đóng modal
+    document.querySelectorAll("[id^='ticketModal_']").forEach(modal => {
+        modal.addEventListener("hidden.bs.modal", function () {
+            // Reset tất cả các ghế về trạng thái ban đầu
+            document.querySelectorAll(".seat.selected").forEach(seat => {
+                seat.classList.remove("selected");
+                seat.style.backgroundColor = seat.classList.contains("seat_vip") ? "blueviolet" : "darkgrey";
+            });
+
+            // Reset tổng tiền về 0
+            document.querySelectorAll("[class^='totalPrice_']").forEach(priceEl => {
+                priceEl.innerText = "0 VNĐ";
+            });
+
+            totalPrices = {}; // Xóa tất cả giá trị đã lưu
+        });
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".confirmBooking").forEach(button => {
+        button.addEventListener("click", function () {
+            let maLichChieu = this.getAttribute("data-malichchieu");
+            let selectedSeats = document.querySelectorAll(`.seat.selected[data-maGhe='${maLichChieu}']`);
+            let maxSeats = 101;
+
+            if (selectedSeats.length === 0) {
+                alert("Bạn chưa chọn ghế!");
+                return;
+            }
+
+            if (selectedSeats.length > maxSeats) {
+                alert(`Bạn chỉ được đặt tối đa ${maxSeats} ghế.`);
+                return;
+            }
+
+            let seatNumbers = [];
+            let seatNumbers_ghe = [];
+            let totalPrice = 0;
+
+            selectedSeats.forEach(seat => {
+                let seatNumber = seat.getAttribute("data-seat-ma"); // Mã ghế trong DB
+                let seatNumber_ghe = seat.getAttribute("data-seat"); // Số ghế hiển thị
+                let seatPrice = parseInt(seat.getAttribute("data-price")) || 0;
+
+                if (seat.classList.contains("seat_vip")) {
+                    seatPrice += 5000; // Cộng thêm 5000 cho ghế VIP
+                }
+
+                seatNumbers.push(seatNumber); // Đúng định dạng
+                seatNumbers_ghe.push(seatNumber_ghe);
+                totalPrice += seatPrice;
+            });
+
+            console.log("Lịch chiếu:", maLichChieu, "Ghế:", seatNumbers, "Số ghế:", seatNumbers_ghe, "Tổng tiền:", totalPrice);
+
+                    $.ajax({
+                        url: "/DatVe/XacNhanDatVe",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            maLichChieu: maLichChieu,
+                            seats: seatNumbers, // Đúng định dạng
+                            soSeats: seatNumbers.length, // Số ghế đã chọn
+                            totalPrice: totalPrice
+                        }),
+                        success: function(response) {
+                            if (response.ticketIds && response.ticketIds.length > 0) {
+                                //alert("Đặt vé thành công! Mã vé: " + response.ticketIds.join(", "));
+                                console.log("oderid được gửi di:",response.ticketIds[0])
+                               window.location.href = "/DatVe/index?orderId=" + response.ticketIds[0];
+                               
+                            } else {
+                                alert("Đặt vé thất bại! Vui lòng thử lại.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Lỗi:", error);
+                            console.log("Chi tiết lỗi:", xhr.responseText);
+                            alert("Có lỗi xảy ra khi đặt vé. Vui lòng thử lại!");
+                        }
+                    });
+        });
+    });
+});
+</script>
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+   <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @{
+            var isFirst = true;
+            var isFirst1 = true;
+            var dem = 0;
+        }
+        @foreach (var b in ViewBag.Banner)
+        {
+            if (b.TrangThai == true)
+            {
+                <div class="carousel-item @(isFirst ? "active" : "")" data-bs-interval="3000">
+                    <img src="~/images/@b.Anh" class="d-block w-100 rounded banner-img slide-effect" 
+                         alt="Banner @b.MaBanner" style="object-fit:fill">
+                </div>             
+                isFirst = false;
+            }        
+        }
+    </div>
+    
+    <!-- Điều hướng chấm tròn -->
+    <div class="carousel-indicators">
+        @foreach (var b in ViewBag.Banner)
+        {
+            if (b.TrangThai == true)
+            {
+                 <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="@dem" class="@(isFirst1 ? "active" : "")"></button>
+                 isFirst1 = false;
+                 dem++;                    
+            }
+        }
+    </div>
+
+    <!-- Nút điều hướng -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+@* phát trailer *@
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="top:60px">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title">Trailer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- phát video -->
+                <iframe id="youtubeIframe" width="100%" height="400"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container mt-4">
+    <div class="container">
+        <div class="margin-bottom-35">
+            <div class="text-center">
+                <ul class="nav nav-tabs tab-films d-flex justify-content-center">
+                    <li>
+                        <a onclick="showMovies('comingSoon')">
+                            <h1 class="font-30 font-sm-15 font-xs-12 text-center">Phim Sắp chiếu</h1>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a onclick="showMovies('nowShowing')">
+                            <h1 class="font-30 font-sm-15 font-xs-12 text-center">Phim Đang chiếu</h1>
+                        </a>
+                    </li>
+                    <li>
+                        <a onclick="showMovies('lastShowing')">
+                            <h1 class="font-30 font-sm-15 font-xs-12 text-center">Phim Dừng chiếu</h1>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <br />
+    @*Phim đang chiếu*@
+    <div class="row row-cols-2 row-cols-md-4 g-4 movie-section" id="nowShowing">
+        @foreach (var item in Model)
+        {
+            var trailer = ((List<Trailer>)ViewBag.DanhSachTrailer)
+            .FirstOrDefault(t => t.MaPhim == item.MaPhim);
+            if (item.TrangThai == true && item.NgayKhoiChieu < DateOnly.FromDateTime(DateTime.Now.AddDays(4)))
+            {
+                <div class="col">
+                    <div class="card movie-card h-100 border-0 shadow-sm">
+                        <!-- Poster phim -->
+                        <div class="position-relative movie-poster" style="background-color:#f8f9fa">
+                            <img src="~/images/@item.Poster" class="card-img-top rounded-3" alt="@item.TenPhim">
+
+                            <!-- Nhãn độ tuổi -->
+                            @if (!string.IsNullOrEmpty(item.DoTuoi))
+                            {
+                                <span class="badge badge-age position-absolute top-0 start-0 m-3">
+                                    @item.DoTuoi
+                                </span>
+
+                            }
+
+
+                            <!-- Biểu tượng play -->
+                            @if (trailer != null && !string.IsNullOrEmpty(trailer.DuongDanTrailer))
+                            {
+                                <span class="play-icon" onclick="openVideoModal('@trailer.DuongDanTrailer', '@item.TenPhim')">
+                                    <i class="fas fa-play-circle"></i>
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body" style="background-color:#f8f9fa">
+                            <a asp-controller="ChiTietPhim" asp-action="Index" asp-route-id="@item.MaPhim" class="card-title fw-bold text-primary text-decoration-none d-block mb-2 movie-title" style="font-size:18px">                                
+                                @(item.TenPhim.Length > 20 ? item.TenPhim.Substring(0, 20) + "..." : item.TenPhim)
+                            </a>
+                            <p class="card-text text-muted text-start mx-auto" style="font-size:14px">
+                                <strong>Thể loại:</strong> @item.TheLoai <br>
+                                <strong>Thời lượng:</strong> @item.ThoiLuong phút
+                            </p>
+                            <button class="btn btn-buy-ticket w-100 fw-bold"
+                                    data-phim-id="@item.MaPhim"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#ticketModal_@item.MaPhim"
+                                    data-phim-id="@item.MaPhim">
+                                MUA VÉ
+                            </button>
+
+
+                        </div>
+
+                    </div>
+                </div>
+                @*mua vé*@
+                <div class="modal fade" id="ticketModal_@item.MaPhim" tabindex="-1" aria-labelledby="ticketModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" style="max-height:800px;max-width: 950px;margin-top:0px;">
+                        <div class="modal-content" style="height:550px">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="ticketModalLabel">Lịch chiếu - Phim @item.TenPhim</h5>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <h2 class="text-center p-2">Mua vé xem phim</h2>
+
+                            <div class="modal-body m-2">
+                                <ul class="d-flex flex-wrap list-unstyled" style="margin-bottom:0">
+                                    @{
+                                        List<DateOnly> ngayDaHienThi = new List<DateOnly>(); // Danh sách lưu ngày đã hiển thị
+                                        int soNgayHienThi = 0; // Biến đếm số ngày hiển thị tối đa 5
+                                        DateOnly ngayHienTai = DateOnly.FromDateTime(DateTime.Now); // Lấy ngày hiện tại
+                                        TimeOnly gioHienTai = TimeOnly.FromDateTime(DateTime.Now);
+
+                                    }
+
+                                    @foreach (var lc in ViewBag.danhSachLichChieu)
+                                    {
+                                        Console.WriteLine($"Ngày chiếu: {lc.NgayChieu}, Giờ chiếu: {lc.GioChieu}");
+                                         if (soNgayHienThi >= 5) // Giới hạn chỉ hiển thị 5 ngày
+                                         {
+                                             break;
+                                         }
+
+                                        if (lc.MaPhim == item.MaPhim && lc.NgayChieu == ngayHienTai && !ngayDaHienThi.Contains(lc.NgayChieu) && lc.GioChieu > gioHienTai)
+                                        {
+                                            ngayDaHienThi.Add(lc.NgayChieu); // Thêm ngày vào danh sách để tránh trùng lặp
+                                            soNgayHienThi++; // Tăng số lượng ngày hiển thị
+
+                                            string ngay = lc.NgayChieu.ToString("dd");
+                                            string thang = lc.NgayChieu.ToString("MM");
+
+                                            // Lấy thứ trong tuần và chuyển đổi sang định dạng T2, T3, ..., CN
+                                            string thu = lc.NgayChieu.DayOfWeek switch
+                                            {
+                                                DayOfWeek.Monday => "T2",
+                                                DayOfWeek.Tuesday => "T3",
+                                                DayOfWeek.Wednesday => "T4",
+                                                DayOfWeek.Thursday => "T5",
+                                                DayOfWeek.Friday => "T6",
+                                                DayOfWeek.Saturday => "T7",
+                                                DayOfWeek.Sunday => "CN",
+                                                _ => ""
+                                            };
+
+                                            <li onclick="ClickNgay('@item.MaPhim', '@lc.NgayChieu.ToString("yyyy-MM-dd")')"
+                                                class="text-center d-block ngayHienThi ngay-@lc.NgayChieu.ToString("yyyy-MM-dd") ticketModal_@item.MaPhim ngay-chieu"
+                                                data-ngay="@lc.NgayChieu.ToString("yyyy-MM-dd")"
+                                                data-phim-id="@item.MaPhim"
+                                                style="width:170px;padding:0 8px 0 10px;cursor:pointer;user-select: none;">
+                                                <span style="font-size:45px">@ngay</span>
+                                                <span style="font-size:20px">/@thang-@thu</span>
+                                            </li>
+                                        }
+                                        if (lc.MaPhim == item.MaPhim && lc.NgayChieu > ngayHienTai && !ngayDaHienThi.Contains(lc.NgayChieu))
+                                        {
+                                            ngayDaHienThi.Add(lc.NgayChieu); // Thêm ngày vào danh sách để tránh trùng lặp
+                                            soNgayHienThi++; // Tăng số lượng ngày hiển thị
+
+                                            string ngay = lc.NgayChieu.ToString("dd");
+                                            string thang = lc.NgayChieu.ToString("MM");
+
+                                            // Lấy thứ trong tuần và chuyển đổi sang định dạng T2, T3, ..., CN
+                                            string thu = lc.NgayChieu.DayOfWeek switch
+                                            {
+                                                DayOfWeek.Monday => "T2",
+                                                DayOfWeek.Tuesday => "T3",
+                                                DayOfWeek.Wednesday => "T4",
+                                                DayOfWeek.Thursday => "T5",
+                                                DayOfWeek.Friday => "T6",
+                                                DayOfWeek.Saturday => "T7",
+                                                DayOfWeek.Sunday => "CN",
+                                                _ => ""
+                                            };
+
+                                            <li onclick="ClickNgay('@item.MaPhim', '@lc.NgayChieu.ToString("yyyy-MM-dd")')"
+                                                class="text-center d-block ngayHienThi ngay-@lc.NgayChieu.ToString("yyyy-MM-dd") ticketModal_@item.MaPhim ngay-chieu"
+                                                data-ngay="@lc.NgayChieu.ToString("yyyy-MM-dd")"
+                                                data-phim-id="@item.MaPhim"
+                                                style="width:170px;padding:0 8px 0 10px;cursor:pointer;user-select: none;">
+                                                <span style="font-size:45px">@ngay</span>
+                                                <span style="font-size:20px">/@thang-@thu</span>
+                                            </li>
+                                        }
+                                    }
+
+                                </ul><hr style="margin-top:0" />
+                                <p><strong style="font-size:25px">Giờ chiếu</strong></p>
+                                <ul class="d-flex flex-wrap list-unstyled" style="margin-bottom:0">
+                                    @foreach (var lc in ViewBag.danhSachLichChieu)
+                                    {
+                                        if (lc.MaPhim == item.MaPhim &&
+                                        (lc.NgayChieu > ngayHienTai || (lc.NgayChieu == ngayHienTai && lc.GioChieu > gioHienTai)))
+                                        {
+                                            <li class="text-center d-block gio-chieu d-none ngay-@lc.NgayChieu.ToString("yyyy-MM-dd")"
+                                                style="width:130px;padding:0 8px 0 10px ;margin-right: 30px;">
+                                                <button style="width:120px;border:none;margin-right:10px"
+                                                        onclick="openBookingModal(@lc.MaLichChieu)">
+                                                    <span style="font-size:25px">@lc.GioChieu.ToString("HH:mm")</span>
+                                                </button>
+                                                <p>@lc.TongGheTrong ghế trống</p>
+                                            </li>
+
+                                            <div class="modal fade" id="bookingModal_@lc.MaLichChieu" tabindex="-1" aria-labelledby="bookingModal_@lc.MaLichChieu" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" style="max-height:800px;max-width: 1000px;margin-top:0px; background: rgba(0, 0, 0, 0.8)">
+                                                    <!-- Sử dụng modal-lg để tránh lỗi hiển thị -->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h2 class="modal-title">Chọn Ghế & Thanh Toán (Phim: @item.TenPhim - Giờ chiếu: @lc.GioChieu) </h2>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                       
+                                                        <div class="modal-body">
+                                                            <p style="font-size:25px">Chọn ghế bạn muốn đặt:</p>
+
+                                                            <div class="d-flex"style="user-select: none;">
+                                                                <!-- Cột bên trái: Ghế -->
+                                                                <div class="seat-container " style="flex: 2; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                                                                    <div class="screen text-center" style="position: relative; width: 60%; height: 30px; display: flex;text-align:center; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                                                        <div style="position: absolute; top: 0; left: 50%; width: 100%; height: 10px; background: transparent; border-top: 5px solid #ccc; border-radius: 50% / 100% 100% 0 0; transform: translateX(-25%);">Màn hình</div>
+                                                                    </div>
+                                                                    @{
+                                                                        string currentRow = "";
+                                                                        var danhSachGhe = ((IEnumerable<dynamic>)ViewBag.DanhSachGhe)
+                                                                            .OrderBy(g => g.SoGhe[0])  
+                                                                            .ThenBy(g => int.Parse(g.SoGhe.Substring(1)))
+                                                                            .ToList();
+                                                                    }
+
+                                                                    <div class="seat-selection" data-malichchieu="@lc.MaLichChieu">
+                                                                        @foreach (var ghe in danhSachGhe)
+                                                                        {
+                                                                            string row = ghe.SoGhe.Substring(0, 1);
+
+                                                                            if (row != currentRow)
+                                                                            {
+                                                                                if (!string.IsNullOrEmpty(currentRow))
+                                                                                {
+                                                                                    @:</div>
+                                                                                }
+
+                                                                                @:<div class="seat-row">
+                                                                                currentRow = row;
+                                                                            }
+
+                                                                            @if (ghe.MaPhong == lc.MaPhong)
+                                                                            {
+                                                                                var checkGhe = 1;
+                                                                                @foreach (var ve in ViewBag.DanhSachVe)
+                                                                                {
+                                                                                    @if (lc.MaLichChieu == ve.MaLichChieu && ghe.SoGhe == ve.SoGhe && ve.TrangThai == true)
+                                                                                    {
+                                                                                       <button style="cursor:no-drop ;"  class="seat booked " data-seat="@ve.SoGhe">@ve.SoGhe</button>
+                                                                                        checkGhe = 0;
+                                                                                    }
+                                                                                    @if (lc.MaLichChieu == ve.MaLichChieu && ghe.SoGhe == ve.SoGhe && ve.TrangThai == false)
+                                                                                    {
+                                                                                        <button style="background-color:darkorange;color:white;cursor:no-drop;pointer-events: none;" class="seat new_booked" data-seat="@ve.SoGhe">@ve.SoGhe</button>
+                                                                                        checkGhe = 0;
+                                                                                        @* new_booked *@
+                                                                                    }
+                                                                                   
+                                                                                }
+                                                                                if (checkGhe == 1)
+                                                                                {
+                                                                                    if (ghe.LoaiGhe == "VIP")
+                                                                                    {
+                                                                                        <button data-maGhe="@lc.MaLichChieu" class="seat seat_vip" data-seat-ma="@ghe.MaGhe" data-price="@lc.GiaVe" data-seat="@ghe.SoGhe">@ghe.SoGhe</button> 
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <button data-maGhe="@lc.MaLichChieu" class="seat" data-seat-ma="@ghe.MaGhe" data-seat="@ghe.SoGhe" data-price="@lc.GiaVe">@ghe.SoGhe</button> 
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        @if (!string.IsNullOrEmpty(currentRow))
+                                                                        {
+                                                                            @:</div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Cột bên phải: Thanh toán -->
+                                                                <div class="payment-container ms-4 p-3 border rounded" style="flex: 1;">
+                                                                    <div class="text-center">
+                                                                    <img src="~/images/@item.Poster" class=" rounded-3 " width="150px" alt="@item.TenPhim">
+                                                                    </div>
+                                                                   <p class="mt-3" style="font-size:16px">Tổng tiền: <span class="totalPrice_@lc.MaLichChieu">0</span></p>
+
+                                                                    <div class="modal-footer"  style="margin-top: auto;">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                                        @if (MaKhachHang!=0){
+                                                                        <button type="button" class="btn btn-success confirmBooking"  data-malichchieu="@lc.MaLichChieu">Xác nhận thanh toán</button>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                        <button type="button" class="btn btn-success" onclick="DangNhap()">Xác nhận thanh toán</button>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer" style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: blueviolet;border: 1px solid #666;border-radius:5px;"></span>
+                                                                <span>Ghế VIP</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: darkgrey;border: 1px solid #666;border-radius:5px;"></span> 
+                                                                <span>Ghế Thường</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: red;border: 1px solid #666;border-radius:5px;"></span>
+                                                                <span>Đã Đặt</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: darkorange;border: 1px solid #666;border-radius:5px;"></span> 
+                                                                <span>Chờ Thanh Toán</span>
+                                                            </div>
+                                                        </div>
+
+                                                        
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- Đặt modal này ở cuối body -->
+            }
+
+        }
+    </div>
+    <div class="row row-cols-2 row-cols-md-4 g-4 d-none movie-section" id="comingSoon">
+        @foreach (var item in Model)
+        {
+            var trailer = ((List<Trailer>)ViewBag.DanhSachTrailer)
+            .FirstOrDefault(t => t.MaPhim == item.MaPhim);
+            if (item.TrangThai == true && item.NgayKhoiChieu > DateOnly.FromDateTime(DateTime.Now.AddDays(3)))
+            {
+                <div class="col">
+                    <div class="card movie-card h-100 border-0 shadow-sm">
+                        <!-- Poster phim -->
+                        <div class="position-relative movie-poster" style="background-color:#f8f9fa">
+                            <img src="~/images/@item.Poster" class="card-img-top rounded-3" alt="@item.TenPhim">
+
+                            <!-- Nhãn độ tuổi -->
+                            @if (!string.IsNullOrEmpty(item.DoTuoi))
+                            {
+                                <span class="badge badge-age position-absolute top-0 start-0 m-3">
+                                    @item.DoTuoi
+                                </span>
+
+                            }
+
+
+                            <!-- Biểu tượng play -->
+                            @if (trailer != null && !string.IsNullOrEmpty(trailer.DuongDanTrailer))
+                            {
+                                <span class="play-icon" onclick="openVideoModal('@trailer.DuongDanTrailer', '@item.TenPhim')">
+                                    <i class="fas fa-play-circle"></i>
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body" style="background-color:#f8f9fa">
+                            <a asp-controller="ChiTietPhim" asp-action="Index" asp-route-id="@item.MaPhim" class="card-title fw-bold text-primary text-decoration-none d-block mb-2 movie-title" style="font-size:18px">                                
+                                @(item.TenPhim.Length > 20 ? item.TenPhim.Substring(0, 20) + "..." : item.TenPhim)
+                            </a>
+                            <p class="card-text text-muted text-start mx-auto" style="font-size:14px">
+                                <strong>Thể loại:</strong> @item.TheLoai <br>
+                                <strong>Thời lượng:</strong> @item.ThoiLuong phút<br />
+                                <strong>Ngày khởi chiếu:</strong> @item.NgayKhoiChieu.ToString("dd/MM/yyy")
+                            </p>
+                            <span class="badge bg-warning text-dark">Sắp chiếu</span>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="row row-cols-2 row-cols-md-4 g-4 d-none movie-section" id="lastShowing">
+        @foreach (var item in Model)
+        {
+            var trailer = ((List<Trailer>)ViewBag.DanhSachTrailer)
+            .FirstOrDefault(t => t.MaPhim == item.MaPhim);
+            if (item.TrangThai == false)
+            {
+                <div class="col">
+                    <div class="card movie-card h-100 border-0 shadow-sm">
+                        <!-- Poster phim -->
+                        <div class="position-relative movie-poster" style="background-color:#f8f9fa">
+                            <img src="~/images/@item.Poster" class="card-img-top rounded-3" alt="@item.TenPhim">
+
+                            <!-- Nhãn độ tuổi -->
+                            @if (!string.IsNullOrEmpty(item.DoTuoi))
+                            {
+                                <span class="badge badge-age position-absolute top-0 start-0 m-3">
+                                    @item.DoTuoi
+                                </span>
+
+                            }
+
+
+                            <!-- Biểu tượng play -->
+                            @if (trailer != null && !string.IsNullOrEmpty(trailer.DuongDanTrailer))
+                            {
+                                <span class="play-icon" onclick="openVideoModal('@trailer.DuongDanTrailer', '@item.TenPhim')">
+                                    <i class="fas fa-play-circle"></i>
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body" style="background-color:#f8f9fa">
+                            <a asp-controller="ChiTietPhim" asp-action="Index" asp-route-id="@item.MaPhim" class="card-title fw-bold text-primary text-decoration-none d-block mb-2 movie-title" style="font-size:18px">                                
+                                @(item.TenPhim.Length > 20 ? item.TenPhim.Substring(0, 20) + "..." : item.TenPhim)
+                            </a>
+                            <p class="card-text text-muted text-start mx-auto" style="font-size:14px">
+                                <strong>Thể loại:</strong> @item.TheLoai <br>
+                                <strong>Thời lượng:</strong> @item.ThoiLuong phút<br />
+                                <strong>Ngày khởi chiếu:</strong> @item.NgayKhoiChieu.ToString("dd/MM/yyy")
+                            </p>
+                            <span class="badge bg-danger text-white">Dừng chiếu</span>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

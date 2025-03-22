@@ -1,0 +1,473 @@
+﻿@model dynamic
+
+@{
+
+    var link = Context.Session.GetString("LinkThanhToan") ?? "";
+    int OrderId = ViewBag.OrderId;
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    decimal giave = 0;
+    string soghe = "";
+    int maghe = 0;
+    string dau = "";
+    string tenKhach = "";
+    int Makhach = 0;
+    int maLichChieu = 0;
+    DateTime ngaydat = default;
+    TimeOnly giochieu = default;
+    string TenPhim = "";
+    DateOnly NgayChieu = default;
+    string Anh = "";
+    int ThoiLuong = 0;
+    var giacombo = 0;
+    int dem = 1;
+}
+
+@foreach (var v in Model)
+{
+    maLichChieu = v.MaLichChieu;
+    giave = v.GiaVe + giave;
+    soghe = soghe + dau + v.SoGhe;
+    tenKhach = v.TenKhach;
+    ngaydat = v.NgayDat;
+    dau = ", ";
+    giochieu = v.GioChieu;
+    Makhach = v.MaKhachHang;
+    TenPhim = v.TenPhim;
+    NgayChieu = v.NgayChieu;
+    Anh = v.Anh;
+    ThoiLuong = v.ThoiLuong;
+}
+<div class="container mt-4 p-4">
+
+
+    <style>
+        #iframeWrapper {
+            position: relative;
+            width: 750px; /* Điều chỉnh kích thước khung hiển thị */
+            height: 340px; /* Điều chỉnh kích thước khung hiển thị */
+            overflow: hidden; /* Ẩn phần bị dư thừa */
+            border: 1px solid #ccc; /* Tạo viền nếu muốn */
+        }
+
+        #paymentIframe {
+            width: 1030px; /* Phóng to iframe để di chuyển nội dung */
+            height: 700px; /* Phóng to iframe để di chuyển nội dung */
+            position: absolute;
+            top: -260px; /* Cắt nội dung trên */
+            left: -80px; /* Cắt nội dung bên trái */
+        }
+
+        table th, table td {
+            vertical-align: middle;
+        }
+
+        table th {
+            text-align: center;
+        }
+
+        .quantity-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+            padding: 5px;
+        }
+            /* Ẩn mũi tên cho tất cả các trình duyệt */
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+    </style>
+    @*     @if (!string.IsNullOrEmpty(link))
+    {
+    <script>
+    window.onload = function () {
+    $('#paymentModal').modal('show');
+    };
+    document.getElementById("openModalBtn").addEventListener("click", function () {
+    var myModal = new bootstrap.Modal(document.getElementById("paymentModal"), {
+    keyboard: false
+    });
+    myModal.show();
+    });
+    </script>
+    }  *@
+
+    <!-- Modal Bootstrap -->
+    @*  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="left:-130px;top:100px">
+    <div class="modal-content" style="width:800px">
+    <div class="modal-header">
+    <h5 class="modal-title" id="modalLabel">Thanh Toán</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <p>Vui lòng quét mã để thanh toán:</p>
+    <div id="iframeWrapper">
+    <iframe src="@link" id="paymentIframe" style="width:1030px;height:700px;border:none" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div> *@
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content justify-content-center text-center">
+                <!-- Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transactionModalLabel">Mã QR thanh toán</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body">
+                    <img id="qrCode" src="" alt="QR Code" class="img-fluid" />
+                    <h6 class="mt-3">Nội dung giao dịch: <span id="transactionId"></span></h6>
+                    
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="text-center mb-4">Chi tiết đơn hàng</h2>
+    <div class="d-flex justify-content-center ">
+
+        <div class="col-md-6">
+
+            <table class="table table-striped table-bordered table-hover" style="font-size: 18px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Tên Phim:</strong></td>
+                        <td>@TenPhim</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ảnh:</strong></td>
+                        <td style="text-align: center;">
+                            <img src="~/images/@Anh" alt="@Anh" width="100px" style="border-radius:10px;" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Thời lượng:</strong></td>
+                        <td>@ThoiLuong Phút</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Số ghế:</strong></td>
+                        <td>@soghe</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giờ chiếu:</strong></td>
+                        <td>@giochieu</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ngày chiếu:</strong></td>
+                        <td>@NgayChieu</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giá vé:</strong></td>
+                        <td>@giave.ToString("N0") VNĐ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ngày đặt:</strong></td>
+                        <td>@ngaydat.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                </tbody>
+
+            </table>
+            @{
+                // if (link != "")
+                // {
+                //     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                //         <div class="modal-dialog">
+                //             <div class="modal-content">
+                //                 <div class="modal-header">
+                //                     <h5 class="modal-title" id="modalLabel">Thanh Toán</h5>
+                //                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                //                 </div>
+                //                 <div class="modal-body">
+                //                     <p>Vui lòng quét mã để thanh toán:</p>
+                //                     <a href="@link" class="btn btn-success" target="_blank">Thanh toán ngay</a>
+                //                 </div>
+                //                 <div class="modal-footer">
+                //                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                //                 </div>
+                //             </div>
+                //         </div>
+                //     </div>
+                // }
+            }
+
+
+
+        </div>
+        <div class="col-md-7" style="height:auto;margin-left:50px">
+            <table class="table table-striped table-bordered table-hover" style="font-size: 18px;">
+                <tbody>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên combo</th>
+                        <th>Ảnh</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                    </tr>
+                    @foreach (var item in ViewBag.combo)
+                    {
+                        <tr>
+                            <th>@dem</th>
+                            <th>@item.TenCombo</th>
+                            <th><img src="~/images/@item.Anh" width="70px" height="70px" alt="Alternate Text" /></th>
+                            <th>@item.Gia.ToString("N0") VNĐ</th>
+                            <th>
+                                <div class="quantity-container">
+                                    <button class="quantity-btn decrease" data-combo-id="@item.MaCombo">-</button>
+                                    <input type="number" name="soluong_@item.MaCombo" class="quantity" value="0" min="0" data-GiaVe="@giave" data-GiaCombo="@item.Gia" disabled />
+                                    <button class="quantity-btn increase" data-combo-id="@item.MaCombo">+</button>
+                                </div>
+                            </th>
+                        </tr>
+
+                        dem++;
+                    }
+                </tbody>
+            </table>
+            @{
+                var TongTien = giave + giacombo;
+            }
+            <h3 class="TongTien" id="amount">Tổng: @TongTien.ToString("N0") VNĐ</h3>
+            <input hidden type="number" name="TongVe" id="TongVe" value="@giave" />
+            <div style="display:flex; justify-content:end;">
+                <form method="post" asp-controller="CheckoutApi" asp-action="Create" id="paymentForm" style="display:flex">
+                    <input hidden type="number" name="Makhach" value="@Makhach" />
+                    <input hidden type="number" name="MaLichChieu" value="@maLichChieu" />
+                    <input hidden type="text" name="soghe" value="@soghe" required />
+                    <input hidden type="number" name="selectedCombo" id="selectedComboInput" value="0" />
+                    <input hidden type="text" name="TenPhim" value="@TenPhim" required />
+                    <input hidden type="number" name="tongtien" id="TongTien" value="@giave" required />
+                    <input hidden type="number" name="giave"  value="@giave" required />
+                    <input hidden type="datetime" name="ngaydat" value="@ngaydat.ToString("yyyy-MM-dd")" required />
+                    <input hidden type="time" name="giochieu" value="@giochieu.ToString("HH:mm")" required />
+                    <a href="@Url.Action("XoaVe", "Home" ,new { MaLichChieu = maLichChieu })" class="btn btn-primary btn-lg" style="margin-right:15px">Hủy vé</a>
+
+                    <button type="submit" id="create-payment-link-btn" class="btn btn-success btn-lg" style="margin-right:15px">Tạo Link thanh toán</button>
+                    <button class="btn btn-success btn-lg" id="loadingButton" style="display: none;" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Đang tạo mã...
+                    </button>
+                </form>
+
+                <form method="post" asp-controller="NhanVien" asp-action="DatVe" id="paymentForm_TT" style="display:flex; justify-content:end;">
+                    <input hidden type="number" name="Makhach" value="@Makhach" />
+                    <input hidden type="text" name="HinhThucTT" value="CK" />
+                    <input hidden type="number" name="MaLichChieu" value="@maLichChieu" />
+                    <input hidden type="number" name="selectedCombo" id="selectedComboInput_3" value="0" />
+                    <input hidden type="text" name="soghe" value="@soghe" required />
+                    <input hidden type="text" name="TenPhim" value="@TenPhim" required />
+                    <input hidden type="number" name="tongtien" id="TongTien3" value="@giave" required />
+                    <input hidden type="number" name="giave"  value="@giave" required />
+                    <input hidden type="number" name="selectedCombo" id="selectedComboInput" value="0" />
+                    <input hidden type="datetime" name="ngaydat" value="@ngaydat.ToString("yyyy-MM-dd")" required />
+                    <input hidden type="time" name="giochieu" value="@giochieu.ToString("HH:mm")" required />
+                </form>
+                <button type="button" onclick="createTransaction()" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#transactionModal" style="margin-right:15px">
+                    Tạo QR thanh toán
+                </button>
+
+                @{
+                    var ChucVu = Context.Session.GetString("ChucVu") ?? "";
+                    if (ChucVu == "Nhan Vien")
+                    {
+                        <form method="post" asp-controller="NhanVien" asp-action="DatVe" id="paymentForm" style="display:flex; justify-content:end;">
+                            <input hidden type="number" name="Makhach" value="@Makhach" />
+                            <input hidden type="number" name="MaLichChieu" value="@maLichChieu" />
+                            <input hidden type="number" name="selectedCombo" id="selectedComboInput_2" value="0" />
+                            <input hidden type="text" name="soghe" value="@soghe" required />
+                            <input hidden type="text" name="TenPhim" value="@TenPhim" required />
+                            <input hidden type="number" name="tongtien" id="TongTien2" value="@giave" required />
+                            <input hidden type="number" name="giave" value="@giave" required />
+                            <input hidden type="number" name="selectedCombo" id="selectedComboInput" value="0" />
+                            <input hidden type="datetime" name="ngaydat" value="@ngaydat.ToString("yyyy-MM-dd")" required />
+                            <input hidden type="time" name="giochieu" value="@giochieu.ToString("HH:mm")" required />
+                            <button type="submit" id="create-payment-link-btn" class="btn btn-success btn-lg" >Thanh toán tiền mặt</button>
+                        </form>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    @*  @if (link == "")
+    {
+    <form asp-controller="CheckoutApi" asp-action="Create_json" method="post">
+    <input hidden type="number" name="Makhach" value="@Makhach" />
+    <input hidden type="number" name="MaLichChieu" value="@maLichChieu" />
+    <input hidden type="text" name="soghe" value="@soghe" required />
+    <input hidden type="text" name="TenPhim" value="@TenPhim" required />
+    <input hidden type="number" name="giave" value="@giave" required />
+    <input hidden type="datetime" name="ngaydat" value="@ngaydat.ToString("yyyy-MM-dd")" required />
+    <input hidden type="time" name="giochieu" value="@giochieu.ToString("HH:mm")" required />
+    <input type="hidden" name="orderId" value="@OrderId" />
+    <button type="submit" class="btn btn-primary  btn-lg">Tạo QR thanh toán</button>
+    </form>
+    }
+    else
+    {
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">
+    Mở thanh toán
+    </button>
+
+    }  *@
+
+</div>
+
+<script>
+    document.getElementById("paymentForm").addEventListener("submit", function (event) {
+        // Hiệu ứng loading
+        document.getElementById("create-payment-link-btn").style.display = "none";
+        document.getElementById("loadingButton").style.display = "block";
+    });
+    document.querySelectorAll('.quantity-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
+            var quantityInput = this.parentElement.querySelector('.quantity');  // Lấy trường input số lượng
+            var comboId = parseInt(this.getAttribute('data-combo-id'));  // Chuyển đổi giá trị thành int
+            var price = parseInt(quantityInput.getAttribute('data-GiaCombo'));  // Lấy giá combo
+            var totalElement = document.querySelector('.TongTien');  // Thẻ hiển thị tổng tiền
+
+            // Nếu là nút tăng số lượng
+            if (this.classList.contains('increase')) {
+                var otherQuantityInputs = document.querySelectorAll('.quantity');
+                otherQuantityInputs.forEach(function (input) {
+                    // Nếu có combo nào đã được chọn, đặt số lượng về 0
+                    if (input !== quantityInput && parseInt(input.value) > 0) {
+                        input.value = 0;  // Đặt số lượng của combo khác về 0
+                    }
+                });
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            }
+            // Nếu là nút giảm số lượng
+            else if (this.classList.contains('decrease')) {
+                if (parseInt(quantityInput.value) > 0) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                }
+            }
+
+            // Cập nhật tổng tiền sau mỗi thay đổi số lượng
+            updateTotal();
+        });
+    });
+
+    // Hàm cập nhật tổng tiền
+    function updateTotal() {
+        var total = 0;
+        var hasCombo = false; // Kiểm tra xem có combo nào được chọn không
+
+        // Duyệt qua tất cả các input số lượng và tính tổng tiền cho tất cả các combo
+        document.querySelectorAll('.quantity').forEach(function (input) {
+            var quantity = parseInt(input.value);  // Chuyển đổi giá trị số lượng thành int
+
+            // Nếu số lượng lớn hơn 0 thì tính tổng tiền
+            if (!isNaN(quantity) && quantity > 0) {
+                var GiaCombo = parseInt(input.getAttribute('data-GiaCombo'));  // Lấy giá combo
+                var GiaVe = parseInt(input.getAttribute('data-GiaVe'));  // Lấy giá vé
+
+                // Cộng tổng tiền cho combo và vé
+                total += quantity * GiaCombo + GiaVe;
+
+                hasCombo = true;  // Đánh dấu là đã có ít nhất 1 combo được chọn
+            }
+        });
+
+        // Nếu không có combo nào được chọn (tất cả đều là 0), chỉ tính giá vé
+        if (!hasCombo) {
+            total = parseInt(document.querySelector('.quantity').getAttribute('data-GiaVe'));  // Lấy giá vé
+        }
+
+        // Cập nhật tổng tiền hiển thị trên giao diện
+        document.querySelector('.TongTien').textContent = "Tổng: " + total.toLocaleString() + " VNĐ";
+        document.getElementById('TongTien').value = total;
+        document.getElementById('TongTien2').value = total;
+        document.getElementById('TongTien3').value = total;
+        document.getElementById('TongVe').value = total;
+        // Cập nhật ID combo đã chọn vào input hidden trong form (nếu có combo được chọn)
+        var selectedComboId = null;
+        document.querySelectorAll('.quantity').forEach(function (input) {
+            var quantity = parseInt(input.value);
+            if (quantity > 0) {
+                selectedComboId = input.name.split('_')[1];  // Lấy MaCombo từ tên input
+            }
+        });
+
+        if (selectedComboId) {
+            document.getElementById('selectedComboInput').value = selectedComboId;
+            document.getElementById('selectedComboInput_2').value = selectedComboId;
+            document.getElementById('selectedComboInput_3').value = selectedComboId;
+        }
+    }
+    let currentTransactionId = '';
+
+    // Tạo giao dịch mới
+    async function createTransaction() {
+        const amount = parseFloat(document.getElementById('TongVe').value)
+        const response = await fetch('/DatVe/CreateTransaction?amount=' + amount, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseFloat(amount) })
+        });
+
+        if (!response.ok) {
+            alert("Tạo giao dịch thất bại!");
+            return;
+        }
+
+        const data = await response.json();
+        currentTransactionId = data.transactionId;
+        document.getElementById('transactionId').innerText = data.transactionId;
+        document.getElementById('qrCode').src = data.qrUrl;
+        // Kiểm tra nếu transactionId không rỗng, thì gọi API mỗi 1 giây
+        setInterval(searchTransactions, 1500);
+    }
+    let searchTimeout;
+
+    async function searchTransactions() {
+        if (searchTimeout) clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(async () => {
+            const transactionElement = document.getElementById('transactionId');
+            const transactionId = transactionElement.textContent.trim();
+            try {
+                const response = await fetch(`/DatVe/TimGiaoDich?content=`+transactionId);
+
+                if (!response.ok) {
+                    alert("Không tìm thấy giao dịch nào!" + transactionId);
+                    return;
+                }
+
+                const transactions = await response.json();
+                if (transactions.success == "True") {
+                    document.getElementById('paymentForm_TT').submit();
+                }
+                document.getElementById('transactionResult').textContent = JSON.stringify(transactions, null, 2);
+            } catch (error) {
+                console.error("Lỗi khi gọi API:", error);
+            }
+        }, 500);  // Chờ 500ms trước khi gọi API
+    }
+    const transactionElement = document.getElementById('transactionId');
+</script>

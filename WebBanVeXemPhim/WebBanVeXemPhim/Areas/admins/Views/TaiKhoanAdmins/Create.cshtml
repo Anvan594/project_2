@@ -1,0 +1,49 @@
+﻿@model WebBanVeXemPhim.Models.TaiKhoanAdmin
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h4>Thêm mới </h4>
+    <form asp-action="Create" id="createForm">
+        @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="TenDangNhap" class="control-label">Tên đăng nhập</label>
+                <input asp-for="TenDangNhap" class="form-control" />
+                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+            </div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="MatKhau" class="control-label">Mật khẩu</label>
+                <input asp-for="MatKhau" class="form-control" />
+                <span asp-validation-for="MatKhau" class="text-danger"></span>
+            </div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="HoTen" class="control-label">Họ và tên</label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="SoDienThoai" class="control-label">Số điện thoại</label>
+                <input asp-for="SoDienThoai" class="form-control" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+        <div class="form-group" style="padding:5px">
+                <label asp-for="ChucVu" class="control-label">Chức vụ</label>
+                <input asp-for="ChucVu" class="form-control" />
+                <span asp-validation-for="ChucVu" class="text-danger"></span>
+            </div>
+        <button type="button" class="btn btn-success" onclick="submitCreateForm()">Lưu</button>
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

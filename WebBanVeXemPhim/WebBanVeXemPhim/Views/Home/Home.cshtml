@@ -1,0 +1,264 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.Phim>
+@{
+    ViewData["Title"] = "Trang Chủ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* Hiệu ứng chuyển slide mượt mà */
+    .carousel-fade .carousel-item {
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+    }
+
+        .carousel-fade .carousel-item.active {
+            opacity: 1;
+        }
+
+    /* Điều chỉnh hình ảnh */
+    .banner-img {
+        object-fit: cover;
+        height: 400px; /* Điều chỉnh kích thước theo trang */
+        border-radius: 12px;
+    }
+
+    .container {
+        max-width: 80%;
+        margin: 0 auto; /* Căn giữa */
+    }
+    /* Đảm bảo poster có cùng tỷ lệ */
+    .movie-poster {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .movie-poster img {
+            width: 100%;
+            height: 350px; /* Điều chỉnh nếu cần */
+            object-fit: cover;
+            border-radius: 15px;
+            transition: all 0.3s ease-in-out;
+        }
+
+    .movie-card {
+        max-width: 250px
+    }
+
+        .movie-card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+    /* Hiệu ứng làm tối khi hover */
+    .movie-poster::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 8px;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0); /* Ban đầu trong suốt */
+        transition: background 0.3s ease-in-out;
+    }
+
+    .play-icon {
+        font-size: 50px;
+        color: white;
+        border-radius: 50%;
+        padding: 15px;
+        cursor: pointer;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        z-index: 2;
+    }
+
+    /* Hiển thị nút play khi hover */
+    .movie-poster:hover .play-icon {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    /* Khi hover, làm tối nền */
+    .movie-poster:hover::after {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Badge độ tuổi */
+    .badge-age {
+        background-color: #ffc107; /* Vàng */
+        color: #000;
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 6px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .btn-buy-ticket {
+        width: 100%; /* Đảm bảo nút luôn rộng full */
+        background-color: #007bff; /* Màu xanh */
+        color: white;
+        font-size: 16px;
+        border-radius: 8px;
+        transition: all 0.3s;
+    }
+
+        .btn-buy-ticket:hover {
+            color: black;
+            background-color: #007bff; /* Màu xanh */
+        }
+
+    .movie-title:hover {
+        color: #ff5733 !important; /* Đổi màu thành cam khi hover */
+        text-shadow: 0px 0px 8px rgba(255, 87, 51, 0.7); /* Hiệu ứng phát sáng */
+    }
+
+</style>
+<script>
+    function openVideoModal(videoUrl) {
+        var videoModal = new bootstrap.Modal(document.getElementById('videoModal'), {
+            keyboard: false
+        });
+
+        var iframeElement = document.getElementById("youtubeIframe");
+
+        // Lấy ID video từ link YouTube
+        let videoId = extractYouTubeId(videoUrl);
+        if (videoId) {
+            iframeElement.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModal.show();
+        }
+
+        // Khi modal đóng, reset iframe để dừng video
+        document.getElementById("videoModal").addEventListener('hidden.bs.modal', function () {
+            iframeElement.src = "";
+        });
+    }
+
+    // Hàm trích xuất ID từ link YouTube (Hỗ trợ cả dạng dài & rút gọn)
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+
+
+    // Hàm trích xuất ID từ link YouTube
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+</script>
+<!-- Banner (Carousel) -->
+<div id="bannerCarousel" class="carousel slide carousel-fade mb-4" data-bs-ride="carousel" data-bs-interval="2500">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
+    </div>
+
+    <div class="carousel-inner rounded shadow-lg">
+        @{
+            var isFirst = true; // Biến để đánh dấu slide đầu tiên
+        }
+        @foreach (var b in ViewBag.Banner)
+        {
+            <div class="carousel-item @(isFirst ? "active" : "")">
+                <img src="~/images/@b.Anh" class="d-block w-100 rounded banner-img" alt="Banner @b.MaBanner">
+            </div>
+            
+                isFirst = false; // Sau slide đầu tiên, đặt lại isFirst thành false
+            
+        }
+        @*   <div class="carousel-item active">
+        <img src="https://files.betacorp.vn/media/images/2025/02/17/con-tet-ni-oi-tang-ni-deal-hoi-1702-x-621-111106-170225-90.png" class="d-block w-100 rounded banner-img" alt="Banner 1">
+        </div>
+        <div class="carousel-item">
+        <img src="https://files.betacorp.vn/media/images/2025/02/14/1702x621-29-130857-140225-28.jpg" class="d-block w-100 rounded banner-img" alt="Banner 2">
+        </div>
+        <div class="carousel-item">
+        <img src="https://files.betacorp.vn/media/images/2025/02/14/ngt-payoff-poster-1702x621-sneak-155826-140225-38.jpg" class="d-block w-100 rounded banner-img" alt="Banner 3">
+        </div> *@
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+@* phát trailer *@
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="top:60px">
+            <div class="modal-header">
+                <h5 class="modal-title">Trailer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- phát video -->
+                <iframe id="youtubeIframe" width="100%" height="400"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <h2 class="text-center mb-4 fw-bold">🎬 PHIM ĐANG CHIẾU</h2>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        @foreach (var item in Model)
+        {
+            var trailer = ((List<Trailer>)ViewBag.DanhSachTrailer)
+            .FirstOrDefault(t => t.MaPhim == item.MaPhim);
+            if (item.TrangThai == true)
+            {
+                <div class="col">
+                    <div class="card movie-card h-100 border-0 shadow-sm">
+                        <!-- Poster phim -->
+                        <div class="position-relative movie-poster">
+                            <img src="~/images/@item.Poster" class="card-img-top rounded-3" alt="@item.TenPhim">
+
+                            <!-- Nhãn độ tuổi -->
+                            @if (!string.IsNullOrEmpty(item.DoTuoi))
+                            {
+                                <span class="badge badge-age position-absolute top-0 start-0 m-2">
+                                    @item.DoTuoi
+                                </span>
+
+                            }
+
+
+                            <!-- Biểu tượng play -->
+                            @if (trailer != null && !string.IsNullOrEmpty(trailer.DuongDanTrailer))
+                            {
+                                <span class="play-icon" onclick="openVideoModal('@trailer.DuongDanTrailer')">
+                                    <i class="fas fa-play-circle"></i>
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-body text-center">
+                            <a href="#" class="card-title fw-bold text-primary text-decoration-none d-block mb-2 movie-title" style="font-size:18px">
+                                @item.TenPhim
+                            </a>
+                            <p class="card-text text-muted text-start mx-auto" style="font-size:14px">
+                                <strong>Thể loại:</strong> @item.TheLoai <br>
+                                <strong>Thời lượng:</strong> @item.ThoiLuong phút
+                            </p>
+                            <a href="#" class="btn btn-buy-ticket w-100 fw-bold">MUA VÉ</a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+</div>

@@ -1,0 +1,142 @@
+﻿@{
+    ViewData["Title"] = "Đăng Ký";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng Ký</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Định dạng nền */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('/admin.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            position: relative;
+        }
+        /* Lớp phủ để làm mờ nền */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        /* Hộp đăng ký */
+        .register-container {
+            position: relative;
+            z-index: 10;
+            min-width: 400px;
+            max-width: 450px;
+        }
+
+        .register-card {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+            }
+
+        .form-control {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div> <!-- Lớp phủ làm mờ nền -->
+
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="register-container">
+            <div class="card register-card">
+                <div class="text-center mb-3">
+                    <h3>Đăng Ký</h3>
+                </div>
+                <form id="registerForm" autocomplete="off">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Tên người dùng:</label>
+                        <input type="text" id="username" name="username" class="form-control" readonly onfocus="this.removeAttribute('readonly');" autocomplete="off" placeholder="Nhập tên của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" id="email" name="email" class="form-control" autocomplete="off" placeholder="Nhập email của bạn" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu:</label>
+                        <input type="password" id="password" name="password" class="form-control" autocomplete="off" placeholder="Nhập mật khẩu" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" id="DangKyButton">Đăng Ký</button>
+                        <button class="btn btn-primary" id="loadingButton" style="display: none;" disabled>
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Đang gửi mã...
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            document.getElementById("DangKyButton").style.display = "none";
+            document.getElementById("loadingButton").style.display = "block";
+            let formData = {
+                username: document.getElementById("username").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value
+            };
+
+            try {
+                let response = await fetch("/DangKy/DangKy", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}`);
+                }
+
+                let result = await response.text();
+                alert(result);
+
+                // Nếu server trả về thông báo đăng ký thành công, chuyển hướng
+                if (result.includes("thành công") || result.includes("Vui lòng kiểm tra email")) {
+                    window.location.href = "https://mail.google.com/";
+
+                } else {
+                    throw new Error(result);
+                }
+            } catch (error) {
+                alert("Đăng ký thất bại: " + error.message);
+
+                // Hiển thị lại nút đăng ký nếu có lỗi
+                document.getElementById("DangKyButton").style.display = "block";
+                document.getElementById("loadingButton").style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>

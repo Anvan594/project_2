@@ -1,0 +1,174 @@
+﻿
+<style>
+    /* Bọc toàn bộ phần thông báo */
+    .notification-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    /* Icon thông báo */
+    .notification-icon {
+        position: relative;
+        font-size: 24px;
+        cursor: pointer;
+        color: darkgray;
+        transition: color 0.3s;
+        padding-left: 5px;
+    }
+
+        .notification-icon:hover {
+            color: #007bff; /* Đổi màu khi hover */
+        }
+
+    /* Huy hiệu số lượng thông báo */
+    .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -8px;
+        background-color: red;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 0 4px 2px 4px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    /* Nội dung thông báo */
+    .notification-content {
+        position: absolute;
+        top: 40px;
+        right: 0;
+        width: 330px;
+        height: 370px; /* Chiều cao cố định */
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        display: none;
+        z-index: 100;
+        overflow-y: auto; /* Thêm thanh cuộn dọc nếu nội dung dài */
+    }
+
+        /* Danh sách thông báo */
+        .notification-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            user-select: none;
+        }
+
+        /* Mục thông báo */
+        .notification-content li {
+            padding: 8px 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 15px;
+            color: #333;
+        }
+
+            .notification-content li:last-child {
+                border-bottom: none;
+            }
+
+            /* Hiệu ứng hover cho từng thông báo */
+            .notification-content li:hover {
+                background: #f5f5f5;
+                cursor: pointer;
+            }
+            /* Làm nổi bật thông báo chưa đọc */
+            .notification-content li.unread {
+                background-color: #f0f8ff; /* Màu nền xanh nhạt */
+                position: relative;
+                border-left: 5px solid #007bff; /* Viền xanh bên trái */
+                padding-left: 12px; /* Dịch nội dung vào một chút */
+            }
+
+                /* Hover vào thông báo chưa đọc */
+                .notification-content li.unread:hover {
+                    background-color: #e0f0ff; /* Màu sáng hơn khi hover */
+                }
+
+                /* Chấm đỏ nhỏ cho thông báo chưa đọc */
+                .notification-content li.unread::after {
+                    content: "●";
+                    color: red;
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    font-size: 16px;
+                }
+
+</style>
+
+<div class="notification-wrapper">
+    <div class="notification-icon" onclick="toggleNotification()">
+        <i class="fas fa-bell"></i> <!-- Icon thông báo -->
+        @if (Model != 0)
+        {
+             <span class="notification-badge">@Model</span> <!-- Số thông báo -->
+        }
+       
+        
+    </div>
+
+    <div class="notification-content" id="notificationBox">
+        <p><strong>Thông báo mới:</strong></p>
+        <ul>
+            @foreach (var t in ViewBag.ThongBao)
+            {
+                <li class="@(t.TrangThai == false ? "unread" : "")"
+                    onclick="DocThongBao(@t.MaThongBao, this)">
+                @Html.Raw(t.NoiDung)
+            </li>
+            }
+        </ul>
+    </div>
+</div>
+<script>
+    function toggleNotification() {
+        var box = document.getElementById("notificationBox");
+        if (box.style.display === "block") {
+            box.style.display = "none";
+        } else {
+            box.style.display = "block";
+        }
+    }
+
+    // Ẩn box thông báo khi click ra ngoài
+    document.addEventListener("click", function (event) {
+        var box = document.getElementById("notificationBox");
+        var icon = document.querySelector(".notification-icon");
+
+        // Kiểm tra nếu click ngoài icon thì ẩn box
+        if (!icon.contains(event.target) && !box.contains(event.target)) {
+            box.style.display = "none";
+        }
+    });
+    function DocThongBao(MaThongBao, element) {
+    fetch('/ThongBao/updateThongBao?MaThongBao=' + MaThongBao, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(soLuongChuaDoc => {
+        if (typeof soLuongChuaDoc === 'number') {
+            console.log("Số lượng thông báo chưa đọc:", soLuongChuaDoc);
+
+            // Cập nhật số lượng thông báo trên icon
+            let badge = document.querySelector('.notification-badge');
+            if (badge) {
+                if (soLuongChuaDoc >= 1) {
+                    badge.innerText = soLuongChuaDoc;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // Xóa class "unread"
+            element.classList.remove("unread");
+        }
+    })
+    .catch(error => console.error("Lỗi khi cập nhật thông báo:", error));
+}
+</script>

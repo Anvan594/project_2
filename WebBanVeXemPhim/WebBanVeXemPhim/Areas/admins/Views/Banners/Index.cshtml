@@ -1,0 +1,143 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.Banner>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+
+    .container {
+        display: flex;
+        transition: 0.3s;
+    }
+
+    /* Nội dung chính ban đầu chiếm toàn bộ màn hình */
+    .content {
+        flex: 1;
+        transition: 0.3s;
+    }
+
+        /* Khi sidebar mở, nội dung chính thu nhỏ */
+        .content.shrink {
+            flex: 0.7; /* Điều chỉnh theo ý muốn */
+        }
+
+    /* Sidebar ẩn bên phải */
+    .hienthi {
+        position: fixed;
+        top: 100px;
+        right: 0; /* Cố định ở bên phải */
+        width: 29%; /* Chiều rộng khi mở */
+        height: 90vh;
+        background-color: #f8f9fa;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s ease-in-out, opacity 0.3s;
+        padding: 20px;
+        opacity: 0;
+        transform: translateX(100%); /* Đẩy sidebar ra khỏi màn hình bên phải */
+    }
+
+        /* Khi sidebar mở */
+        .hienthi.active {
+            transform: translateX(0); /* Trả sidebar về vị trí ban đầu */
+            opacity: 1;
+        }
+
+    /* Nút đóng sidebar */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+</style>
+<h1>Quản lý Banner</h1>
+<button hidden class="btn btn-toggle toggle-sidebar" id="btnSidebar">
+    <i class="gg-menu-right"></i>
+</button>
+<div class="container">
+    <div id="main-content" class="content full-width">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Ảnh
+                    </th>
+                    <th>
+                        Mô tả
+                    </th>
+                    <th>
+                        Trạng Thái
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="~/images/@item.Anh" alt="Alternate Text" width="150px" />
+
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MoTa)
+                        </td>
+                        <td>
+                            @if (item.TrangThai==true){
+                                <span style="color:green">Đang Hoạt Động</span>
+                            }else{
+                                         <span style="color:red">Ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-warning btn-sm btnOn" onclick="loadbanner_edit(@item.MaBanner)">
+                                Sửa <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="sidebar-container"></div>
+</div>
+<script>
+    function loadbanner_edit(bannerID) {
+        $.ajax({
+            url: '/admins/Banners/Edit/' + bannerID,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+    function closeSidebar() {
+        $("#hienthi").removeClass("active"); // Ẩn sidebar
+        $("#main-content").removeClass("shrink"); // Mở rộng lại nội dung chính
+        document.getElementById("btnSidebar").disabled = false;
+        document.getElementById("btnSidebar").click();
+
+    }
+
+    //ẩn sidebar
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btnOn").forEach(button => {
+            button.addEventListener("click", function () {
+                let btnSidebar = document.getElementById("btnSidebar");
+
+                if (btnSidebar && !btnSidebar.disabled) {
+                    btnSidebar.click();
+                    btnSidebar.disabled = true;
+                }
+            });
+        });
+    });
+</script>

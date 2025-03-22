@@ -1,0 +1,34 @@
+﻿@model WebBanVeXemPhim.Models.Phim
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Chi tiết phim</h3>
+    @if (Model != null)
+    {
+       
+        <p><strong>Tên phim:</strong> @Model.TenPhim</p>
+
+        <p><strong>Đạo Diễn:</strong> @Model.DaoDien</p>
+        <p><strong>Diễn Viên:</strong> @Model.DienVien</p>
+        <p><strong>Thể loại:</strong> @Model.TheLoai</p>
+        <p><strong>Ngôn ngữ:</strong> @Model.NgonNgu</p>
+
+        <p><strong>Thời lượng:</strong> @Model.ThoiLuong phút</p>
+        <p><strong>Ngày khởi chiếu:</strong> @Model.NgayKhoiChieu.ToString("dd/MM/yyyy")</p>
+        <p><strong>Mô tả:</strong> @Model.MoTa</p>
+        <p>
+            <strong>Trạng thái:</strong> @if (Model.TrangThai == true)
+            {
+                <span style="color:green"> Đang chiếu</span>
+            }
+            else
+            {
+                <span style="color:red">Dừng chiếu</span>
+            }
+        </p>
+    }
+    else
+    {
+        <p>Vui lòng chọn phim để xem chi tiết</p>
+    }
+</div>

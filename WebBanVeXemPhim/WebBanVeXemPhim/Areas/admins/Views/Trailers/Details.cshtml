@@ -1,0 +1,18 @@
+﻿@model WebBanVeXemPhim.Models.Trailer
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Chi tiết Trailer</h3>
+
+    @if (Model != null)
+    {
+        <p><strong>Mã Trailer:</strong> @Model.MaTrailer</p>
+        <p><strong>Phim:</strong> @(Model.MaPhimNavigation.TenPhim ?? "Không xác định")</p>
+        <p><strong>Đường dẫn Trailer:</strong> <a href="@Model.DuongDanTrailer" target="_blank">@Model.DuongDanTrailer</a></p>
+        <p><strong>Mô tả:</strong> @Model.MoTaTrailer</p>
+    }
+    else
+    {
+        <p>Vui lòng chọn Trailer để xem chi tiết</p>
+    }
+</div>

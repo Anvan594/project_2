@@ -1,0 +1,42 @@
+﻿<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">&times;</button>
+    <h3>Thêm Phòng Mới</h3>
+    <form id="formThemPhong" onsubmit="return submitFormThemPhong()">
+        <div class="form-group">
+            <label for="TenPhong">Tên phòng:</label>
+            <input type="text" id="TenPhong" name="TenPhong" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="TongSoGhe">Tổng số ghế:</label>
+            <input type="number" id="TongSoGhe" name="TongSoGhe" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Thêm</button>
+    </form>
+</div>
+
+<script>
+    function submitFormThemPhong() {
+        var tenPhong = document.getElementById("TenPhong").value;
+        var tongSoGhe = document.getElementById("TongSoGhe").value;
+let token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '/admins/Phongs/Create',
+            type: 'POST',
+            data: { TenPhong: tenPhong, TongSoGhe: tongSoGhe, __RequestVerificationToken: token },
+            success: function (response) {
+                alert(response.message);
+                if (response.success) {
+                    location.reload();
+                }
+            },
+            error: function () {
+                alert("Lỗi khi thêm phòng!");
+            }
+        });
+        return false;
+    }
+
+
+    
+
+</script>

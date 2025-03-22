@@ -1,0 +1,92 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.ThanhToan>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+    int currentPage = ViewBag.CurrentPage;
+    int totalPages = ViewBag.TotalPages;
+}
+
+
+<h1>Vé đã thanh toán</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Mã Vé
+            </th>
+            <th>
+               Ngày thanh toán
+            </th>
+            <th>
+                Phương thức thanh toán
+            </th>
+            <th>
+                Trạng thái thanh toán
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaVeNavigation.MaVe)
+                <td>
+                        @Html.DisplayFor(modelItem => item.NgayThanhToan)
+                </td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhuongThuc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (currentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(currentPage - 1)">Trước</a>
+                </li>
+            }
+
+            <!-- Hiển thị trang đầu tiên -->
+            @if (currentPage > 3)
+            {
+                <li class="page-item"><a class="page-link" href="?pageNumber=1">1</a></li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+            }
+
+            <!-- Hiển thị các trang xung quanh trang hiện tại -->
+            @for (int i = Math.Max(1, currentPage - 1); i <= Math.Min(totalPages, currentPage + 1); i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i">@i</a>
+                </li>
+            }
+
+            <!-- Hiển thị trang cuối cùng -->
+            @if (currentPage < totalPages - 2)
+            {
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item"><a class="page-link" href="?pageNumber=@totalPages">@totalPages</a></li>
+            }
+
+            @if (currentPage < totalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(currentPage + 1)">Sau</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>

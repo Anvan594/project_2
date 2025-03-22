@@ -1,0 +1,41 @@
+﻿@model WebBanVeXemPhim.Models.Phong
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">&times;</button>
+    <h3>Chỉnh Sửa Phòng</h3>
+    <form asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaPhong" />
+
+        <div class="form-group">
+            <label asp-for="TenPhong" class="control-label">Tên phòng</label>
+            <input asp-for="TenPhong" class="form-control" required />
+            <span asp-validation-for="TenPhong" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SoLuongGhe" class="control-label">Tổng số ghế</label>
+            <input asp-for="SoLuongGhe" type="number" class="form-control" required />
+            <span asp-validation-for="SoLuongGhe" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TrangThai" class="control-label">Trạng thái</label>
+            <select asp-for="TrangThai" class="form-control">
+                <option value="true">Hoạt động</option>
+                <option value="false">Không hoạt động</option>
+            </select>
+            <span asp-validation-for="TrangThai" class="text-danger"></span>
+        </div>
+
+        <div class="form-group" style="padding-top:20px">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

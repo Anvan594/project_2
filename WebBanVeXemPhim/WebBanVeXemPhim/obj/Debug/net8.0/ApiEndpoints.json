@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "PayOSController",
+    "Method": "CheckOrderStatus",
+    "RelativePath": "api/payos/check-order/{orderCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderCode",
+        "Type": "System.Int64",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

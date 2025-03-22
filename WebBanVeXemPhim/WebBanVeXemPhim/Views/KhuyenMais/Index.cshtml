@@ -1,0 +1,16 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.KhuyenMai>
+@{
+	ViewData["Title"] = "Khuyễn mãi";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container mt-5">
+	<div class="row">
+		@foreach (var k in Model)
+		{
+			<div class="col-md-4">
+				<img src="~/images/@k.Anh" alt="Alternate Text" width="100%" />
+				<p>@k.ThongTin</p>
+			</div>
+		}
+	</div>
+</div>

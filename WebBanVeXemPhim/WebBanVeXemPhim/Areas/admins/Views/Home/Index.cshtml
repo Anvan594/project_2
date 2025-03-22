@@ -1,0 +1,314 @@
+﻿﻿        <style>
+
+.movie-slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+.movie-slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 20px;
+}
+
+.movie-card {
+    flex: 0 0 calc(100% / 3 - 20px); /* Hiển thị 3 phim */
+    text-align: center;
+    border-radius: 10px;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 0.7;
+    transform: scale(0.9);
+}
+
+    /* Phim ở giữa sẽ nổi bật ngay cả khi đang trượt */
+    .movie-card.active {
+        transform: scale(1.01);
+        opacity: 1;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    /* Hiệu ứng trượt ảnh */
+    .movie-card img {
+        object-fit: cover;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        transition: transform 0.5s ease-in-out;
+    }
+
+.movie-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 0 0 10px 10px;
+    opacity: 0; /* Ẩn đi mặc định */
+    transform: translateY(100%);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.movie-card.active .movie-info {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.top-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(45deg, #ffcc00, #ff6600);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+/* Nút điều hướng */
+.prev-btn, .next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 24px;
+    border-radius: 50%;
+    transition: background 0.3s ease-in-out;
+}
+
+.prev-btn {
+    left: 10px;
+}
+
+.next-btn {
+    right: 10px;
+}
+
+    .prev-btn:hover, .next-btn:hover {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+
+</style>  
+<div class="container">
+    <div class="page-inner">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
+            <div>
+                <h3 class="fw-bold mb-3">Báo Cáo Thông Kê</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-film"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Số lượng phim</p>
+                                    <h4 class="card-title">@ViewBag.SoPhim</h4>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-info bubble-shadow-small">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Người đăng ký</p>
+                                    <h4 class="card-title">@ViewBag.SoNguoiDk</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="fas fa-money-bill"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Doanh số</p>
+                                    <h4 class="card-title">@ViewBag.DoanhSo đ</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                    <i class="far fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ms-3 ms-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">Đơn Hàng</p>
+                                    <h4 class="card-title">@ViewBag.SoDonHang</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4>Doanh Thu Theo Tuần</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="doanhThuChart"></canvas>
+            </div>
+        </div>
+        <h4>Top Phim Trong Tháng</h4>
+        <div class="movie-slider-container">
+
+            <button hidden class="prev-btn">&#10094;</button>
+            <div class="movie-slider">
+                @for (int i = 0; i < ViewBag.TopPhim.Count; i++)
+                {
+                    var movie = ViewBag.TopPhim[i];
+                    <div class="movie-card">
+                        <div class="top-badge">TOP @(i + 1)</div>
+                        <img src="~/images/@movie.AnhPhim" alt="@movie.TenPhim">
+                        <div class="movie-info">
+                            <h5>@movie.TenPhim</h5>
+                            <p>Đạo diễn: @movie.DaoDien</p>
+                            <p>Thời lượng: @movie.ThoiLuong phút</p>
+                        </div>
+                    </div>
+                }
+            </div>
+            <button hidden class="next-btn">&#10095;</button>
+        </div>
+    </div>
+</div>
+<!-- Nhúng Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctx = document.getElementById('doanhThuChart').getContext('2d');
+    var doanhThuChart = new Chart(ctx, {
+        type: 'line', // Loại biểu đồ (line, bar, pie,...)
+        data: {
+            labels: @Html.Raw(Json.Serialize(ViewBag.DoanhSoLabels)), // Nhãn tháng
+            datasets: [{
+                label: 'Doanh Thu',
+                data: @Html.Raw(Json.Serialize(ViewBag.DoanhSoData)), // Dữ liệu doanh số
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+                const slider = document.querySelector(".movie-slider");
+                const movies = document.querySelectorAll(".movie-card");
+                const prevBtn = document.querySelector(".prev-btn");
+                const nextBtn = document.querySelector(".next-btn");
+
+                let isSliding = false;
+                if (movies.length === 5) {
+                    for (let i = 0; i < 3; i++) {
+                        slider.appendChild(slider.firstElementChild); // Di chuyển phim đầu xuống cuối
+                    }
+                }
+
+                function updateActiveMovie() {
+                    const allMovies = document.querySelectorAll(".movie-card");
+                    allMovies.forEach(movie => movie.classList.remove("active"));
+
+                    allMovies[2].classList.add("active"); // Luôn làm nổi bật phim ở giữa (index 2)
+                }
+
+                function slideLeft() {
+                    if (isSliding) return;
+                    isSliding = true;
+
+                    const firstMovie = slider.firstElementChild;
+                    slider.style.transition = "transform 0.5s ease-in-out";
+                    slider.style.transform = `translateX(-${movies[0].offsetWidth + 20}px)`;
+
+                    setTimeout(() => {
+                        slider.style.transition = "none";
+                        slider.appendChild(firstMovie); // Chuyển phim đầu xuống cuối
+                        slider.style.transform = "translateX(0)";
+                        isSliding = false;
+                    }, 500);
+
+                    updateActiveMovie(); // Cập nhật ngay lập tức
+                }
+
+                function slideRight() {
+                    if (isSliding) return;
+                    isSliding = true;
+
+                    const lastMovie = slider.lastElementChild;
+                    slider.style.transition = "none";
+                    slider.prepend(lastMovie); // Chuyển phim cuối lên đầu
+                    slider.style.transform = `translateX(-${movies[0].offsetWidth + 20}px)`;
+
+                    setTimeout(() => {
+                        slider.style.transition = "transform 0.5s ease-in-out";
+                        slider.style.transform = "translateX(0)";
+                        isSliding = false;
+                    }, 10);
+
+                    updateActiveMovie(); // Cập nhật ngay lập tức
+                }
+
+                nextBtn.addEventListener("click", slideLeft);
+                prevBtn.addEventListener("click", slideRight);
+
+                setInterval(slideLeft, 2500); // Tự động cuộn mỗi 2.5 giây
+
+                updateActiveMovie(); // Cập nhật trạng thái ban đầu
+            });
+</script>

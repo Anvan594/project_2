@@ -1,0 +1,44 @@
+﻿@model WebBanVeXemPhim.Models.KhuyenMai
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Thêm Khuyến Mãi mới</h3>
+    <form asp-action="Create" id="createForm" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="ThongTin" class="control-label">Thông Tin</label>
+                    <input asp-for="ThongTin" class="form-control" required />
+                    <span asp-validation-for="ThongTin" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TrangThai" class="control-label">Trạng Thái</label>
+                    <select asp-for="TrangThai" class="form-control" required>
+                        <option value="true">Hoạt động</option>
+                        <option value="flase">Ngừng</option>
+                    </select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Anh" class="control-label">Ảnh Khuyến Mãi</label>
+                    <input type="file" name="AnhFile" class="form-control" required />
+                    <span asp-validation-for="Anh" class="text-danger"></span>
+                </div>
+
+                <button type="button" class="btn btn-success" onclick="submitCreateForm()">Lưu</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @Html.RenderPartialAsync("_ValidationScriptsPartial")
+}

@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - Rạp Phim</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Đặt chiều cao 100% cho html, body */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* Navbar: fixed ở đầu trang */
+        .navbar {
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+            .navbar.scrolled {
+                background-color: rgba(0, 0, 0, 0.9);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+        /* Wrapper chứa nội dung và footer:
+                                                       - margin-top: 60px để đẩy nội dung xuống dưới navbar
+                                                       - height: calc(100% - 60px) đảm bảo wrapper chiếm phần còn lại của viewport */
+        #page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 60px);
+            margin-top: 60px;
+        }
+        /* Nội dung chính, sử dụng flex: 1 để mở rộng chiếm không gian còn lại */
+        #content {
+            flex: 1;
+            min-height: 700px; /* Nếu muốn đảm bảo tối thiểu 700px cho nội dung */
+            padding: 20px;
+        }
+
+        nav {
+            background: #1a2035;
+           
+        }
+        /* Footer */
+        footer {
+            background-color: #1a2035;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+            footer a {
+                color: #fff;
+                text-decoration: none;
+            }
+
+                footer a:hover {
+                    text-decoration: underline;
+                }
+
+        .notification-icon {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 24px;
+            color: #adb5bd;
+        }
+
+        /* Badge hiển thị số lượng */
+        .notification-badge {
+            position: absolute;
+            top: -2px; /* Điều chỉnh vị trí */
+            right: -5px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 0 4px 2px 4px;
+            border-radius: 50%;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Hộp thông báo */
+        .notification-content {
+            display: none;
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 300px;
+            text-align: left;
+            z-index: 1000;
+        }
+
+        .notification-icon:hover .notification-content {
+            display: block;
+        }
+
+        /* Danh sách thông báo */
+        .notification-content ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+
+            .notification-content ul li {
+                padding: 5px 0;
+                border-bottom: 1px solid #ddd;
+            }
+
+                .notification-content ul li:last-child {
+                    border-bottom: none;
+                }
+    </style>
+</head>
+@{
+    var ChucVu = Context.Session.GetString("ChucVu") ?? "";
+    int check = Context.Session.GetInt32("NguoiDung") ?? 0;
+}
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+        <div class="container d-flex justify-content-center" style="width: 80% !important; display:flex; ">
+            <img src="~/images/logo.jfif" width="60" height="60" alt="logo" style="background: none;left:100px;position:fixed" />
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Beta Cinemas</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto" style="font-size:17px">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="KhuyenMais" asp-action="Index">Khuyễn mãi</a></li>
+
+                    @if (ChucVu != "")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="NhanVien" asp-action="InVe">In Vé</a>
+                        </li>
+                    }
+
+                    @if (check != 0)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="VeDaDat">Vé đã mua</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link">
+                                Xin chào @Context.Session.GetString("TenNguoiDung") !
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Login" asp-action="Logout">Đăng Xuất</a>
+                        </li>
+                        <li class="nav-item">
+                            @await Component.InvokeAsync("Header")
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Login" asp-action="Index">Đăng Nhập</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Login" asp-action="DangKy">Đăng Ký</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Wrapper chứa nội dung và footer -->
+    <div id="page-wrapper">
+        <!-- Nội dung chính -->
+        @RenderBody()
+        <!-- Footer -->
+        <footer class="footer text-white pt-4 text-start" id="footer">
+            <div class="container">
+                <div class="row">
+                    <!-- Cột thông tin về chúng tôi -->
+                    <div class="col-md-4 mb-3">
+                        <h5>Về Chúng Tôi</h5>
+                        <p>Beta Cinemas là hệ thống rạp chiếu phim hàng đầu, mang đến trải nghiệm xem phim tuyệt vời cho bạn.</p>
+                    </div>
+                    <!-- Cột liên kết nhanh -->
+                    <div class="col-md-4 mb-3">
+                        <h5>Liên Kết Nhanh</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="#" class="text-white">Trang Chủ</a></li>
+                            <li><a href="#" class="text-white">Lịch Chiếu</a></li>
+                            <li><a href="#" class="text-white">Liên Hệ</a></li>
+                            <li><a href="#" class="text-white">FAQ</a></li>
+                        </ul>
+                    </div>
+                    <!-- Cột mạng xã hội -->
+                    <div class="col-md-4 mb-3">
+                        <h5>Theo Dõi Chúng Tôi</h5>
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a href="#" class="text-white">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#" class="text-white">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#" class="text-white">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#" class="text-white">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        document.getElementById("scrollTofooter").addEventListener("click", function (event) {
+            let currentPosition = window.scrollY; // Vị trí hiện tại
+            let targetPosition = document.body.scrollHeight; // Cuối trang
+            let distance = targetPosition - currentPosition; // Khoảng cách cần cuộn
+            let duration = 1000; // Thời gian cuộn (ms)
+            let startTime = null;
+
+            function scrollAnimation(currentTime) {
+                if (!startTime) startTime = currentTime;
+                let timeElapsed = currentTime - startTime;
+                let progress = Math.min(timeElapsed / duration, 1); // Tính phần trăm thời gian đã trôi qua
+                let ease = progress * (2 - progress); // Hiệu ứng easing
+
+                window.scrollTo(0, currentPosition + distance * ease); // Cuộn theo easing
+
+                if (timeElapsed < duration) {
+                    requestAnimationFrame(scrollAnimation); // Tiếp tục cuộn nếu chưa hết thời gian
+                }
+            }
+
+            requestAnimationFrame(scrollAnimation);
+        });
+    </script>
+</body>
+</html>

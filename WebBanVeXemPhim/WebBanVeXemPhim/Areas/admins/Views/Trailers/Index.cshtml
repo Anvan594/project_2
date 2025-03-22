@@ -1,0 +1,345 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.Trailer>
+
+@{
+    ViewData["Title"] = "Quản lý Trailer";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Quản lý Trailer</h1>
+
+<p>
+    <button style="font-size:14px" class="btn btn-success btn-sm btnOn" onclick="loadSidebar_create()">
+        Thêm Trailer <i class="fas fa-plus"></i>
+    </button>
+    <form method="get" asp-action="Index">
+        <input type="text" name="searchString" placeholder="Nhập tên trailer..." class="form-control"
+               style="width: 300px; display: inline-block; margin-right: 10px;"
+               value="@ViewBag.SearchString">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
+</p>
+
+<div class="container">
+    <div id="main-content" class="content full-width">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên Phim</th>
+                    <th>Video</th>
+                    <th>Mô tả</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.MaTrailer">
+                        <td>@(item.MaPhimNavigation?.TenPhim ?? "Không có dữ liệu")</td>
+                        <td>
+                            <div class="trailer-container" onclick="openVideoModal('@item.DuongDanTrailer')">
+                                <img src="@(item.MaPhimNavigation?.Poster != null ? Url.Content("~/images/" + item.MaPhimNavigation.Poster) : Url.Content("~/images/default_poster.jpg"))"
+                                     alt="Poster" class="trailer-poster">
+                                <div class="play-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="max-width:300px">@item.MoTaTrailer</td>
+                        <td>
+                            <button class="btn btn-info btn-sm btnOn" onclick="loadSidebar(@item.MaTrailer)">
+                                Xem <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm btnOn" onclick="loadSidebar_edit(@item.MaTrailer)">
+                                Sửa <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteTrailer(@item.MaTrailer)">
+                                Xóa <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="sidebar-container"></div>
+</div>
+<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="top:50px">
+            <div class="modal-header">
+                <h5 class="modal-title">Trailer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- phát video -->
+                <iframe id="youtubeIframe" width="100%" height="400"
+                        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.TotalPages > 1)
+            {
+                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+
+                if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-searchString="@ViewBag.SearchString">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString">@i</a>
+                    </li>
+                }
+
+                if (endPage < ViewBag.TotalPages)
+                {
+                    @if (endPage < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages" asp-route-searchString="@ViewBag.SearchString">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+
+<form id="deleteForm">
+    @Html.AntiForgeryToken()
+</form>
+<style>
+
+    .container {
+        display: flex;
+        transition: 0.3s;
+    }
+
+    .trailer-container {
+        position: relative;
+        width: 150px; /* Điều chỉnh kích thước */
+        height: 200px;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .trailer-poster {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .play-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        color: rgba(255, 255, 255, 0.8);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .trailer-container:hover .play-icon {
+        opacity: 1;
+    }
+
+    .trailer-container:hover .trailer-poster {
+        filter: brightness(50%);
+    }
+
+    /* Nội dung chính ban đầu chiếm toàn bộ màn hình */
+    .content {
+        flex: 1;
+        transition: 0.3s;
+    }
+
+        /* Khi sidebar mở, nội dung chính thu nhỏ */
+        .content.shrink {
+            flex: 0.7; /* Điều chỉnh theo ý muốn */
+        }
+
+    /* Sidebar ẩn bên phải */
+    .hienthi {
+        position: fixed;
+        top: 100px;
+        right: 0; /* Cố định ở bên phải */
+        width: 29%; /* Chiều rộng khi mở */
+        height: 90vh;
+        background-color: #f8f9fa;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s ease-in-out, opacity 0.3s;
+        padding: 20px;
+        opacity: 0;
+        transform: translateX(100%); /* Đẩy sidebar ra khỏi màn hình bên phải */
+    }
+
+        /* Khi sidebar mở */
+        .hienthi.active {
+            transform: translateX(0); /* Trả sidebar về vị trí ban đầu */
+            opacity: 1;
+        }
+
+    /* Nút đóng sidebar */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+</style>
+<button hidden class="btn btn-toggle toggle-sidebar" id="btnSidebar">
+    <i class="gg-menu-right"></i>
+</button>
+<script>
+
+
+    function loadSidebar(trailerId) {
+        $.ajax({
+            url: '/admins/Trailers/Details/' + trailerId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+
+    function loadSidebar_create() {
+        $.ajax({
+            url: '/admins/Trailers/Create',
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+    function submitCreateForm() {
+        var formData = $("#createForm").serialize(); // Lấy dữ liệu form
+        $.ajax({
+            url: '/admins/Trailers/Create',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload(); // Reload lại trang để cập nhật danh sách
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi thêm Trailer!");
+            }
+        });
+    }
+    function loadSidebar_edit(trailerId) {
+        $.ajax({
+            url: '/admins/Trailers/Edit/' + trailerId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+
+    function deleteTrailer(trailerId) {
+        if (!confirm("Bạn có chắc chắn muốn xóa trailer này không?")) return;
+        let token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '/admins/Trailers/DeleteConfirmed',
+            type: 'POST',
+            data: { id: trailerId, __RequestVerificationToken: token },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $("#row_" + trailerId).remove();
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi xóa trailer!");
+            }
+        });
+    }
+
+    function closeSidebar() {
+        $("#hienthi").removeClass("active");
+        $("#main-content").removeClass("shrink");
+        document.getElementById("btnSidebar").disabled = false;
+        document.getElementById("btnSidebar").click();
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btnOn").forEach(button => {
+            button.addEventListener("click", function () {
+                let btnSidebar = document.getElementById("btnSidebar");
+                if (btnSidebar && !btnSidebar.disabled) {
+                    btnSidebar.click();
+                    btnSidebar.disabled = true;
+                }
+            });
+        });
+    });
+    function openVideoModal(videoUrl) {
+        var videoModal = new bootstrap.Modal(document.getElementById('videoModal'), {
+            keyboard: false
+        });
+
+        var iframeElement = document.getElementById("youtubeIframe");
+
+        // Lấy ID video từ link YouTube
+        let videoId = extractYouTubeId(videoUrl);
+        if (videoId) {
+            iframeElement.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            videoModal.show();
+        }
+
+        // Khi modal đóng, reset iframe để dừng video
+        document.getElementById("videoModal").addEventListener('hidden.bs.modal', function () {
+            iframeElement.src = "";
+        });
+    }
+
+    // Hàm trích xuất ID từ link YouTube (Hỗ trợ cả dạng dài & rút gọn)
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+
+
+    // Hàm trích xuất ID từ link YouTube
+    function extractYouTubeId(url) {
+        let match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)/);
+        return match ? match[1] : null;
+    }
+</script>

@@ -1,0 +1,50 @@
+﻿@model WebBanVeXemPhim.Models.KhuyenMai
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">
+        <i class="fas fa-times"></i>
+    </button>
+    <h3>Sửa thông tin Khuyến Mãi</h3>
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label class="control-label">Ảnh hiện tại</label>
+            <br />
+            @if (!string.IsNullOrEmpty(Model.Anh))
+            {
+                <img src="~/images/@Model.Anh" alt="Ảnh hiện tại" style="max-width: 200px; margin-bottom: 10px;" />
+            }
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Chọn ảnh mới (nếu muốn thay đổi)</label>
+            <input type="file" name="fileAnh" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ThongTin" class="control-label">Thông Tin Khuyến Mãi</label>
+            <input asp-for="ThongTin" class="form-control" />
+            <span asp-validation-for="ThongTin" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TrangThai" class="control-label">Trạng thái</label>
+            <select asp-for="TrangThai" class="form-control">
+                <option value="true"><span style="color:green">Đang hoạt động</span></option>
+                <option value="false"><span style="color:red">Ẩn</span></option>
+            </select>
+            <span asp-validation-for="TrangThai" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="MaKhuyenMai" />
+
+        <div class="form-group">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,142 @@
+﻿@model WebBanVeXemPhim.Models.LichChieu
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">
+        <i class="fas fa-times"></i>
+    </button>
+    <h3>Thêm mới lịch chiếu</h3>
+    <form asp-action="Create" id="createForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="MaPhim" class="control-label">Phim</label>
+                    <select asp-for="MaPhim" asp-items="ViewBag.MaPhim" class="form-control"></select>
+                    <span asp-validation-for="MaPhim" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="MaPhong" class="control-label">Phòng chiếu</label>
+                    <select asp-for="MaPhong" asp-items="ViewBag.MaPhong" class="form-control"></select>
+                    <span asp-validation-for="MaPhong" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="NgayChieu" class="control-label">Ngày chiếu</label>
+                    <input asp-for="NgayChieu" type="date" class="form-control" />
+                    <span asp-validation-for="NgayChieu" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="GiaVe" class="control-label">Giá vé</label>
+                    <select asp-for="GiaVe" class="form-control">
+                        <option value="65000">65.000</option>
+                        <option value="75000">75.000</option>
+                        <option value="70000">70.000</option>
+                    </select>
+                    <span asp-validation-for="GiaVe" class="text-danger"></span>
+                </div>
+                <div class="form-group" hidden>
+                    <label asp-for="TrangThai" class="control-label">TrangThai</label>
+                    <select asp-for="TrangThai" class="form-control">
+                        <option value="True">True</option>
+                    </select>
+                    <span asp-validation-for="TrangThai" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="GioChieu" class="control-label">Giờ chiếu</label>
+                    <select asp-for="GioChieu" class="form-control">
+                        @foreach (var gio in new List<string> { "06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00" })
+                        {
+                            <option value="@gio">@gio</option>
+                        }
+                    </select>
+                    <span asp-validation-for="GioChieu" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label"> Số ngày chiếu</label>
+                    <input name="songay" type="number" class="form-control" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group text-center" style="padding-top:20px">
+            <button type="button" class="btn btn-success" >Lưu</button>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @Html.RenderPartialAsync("_ValidationScriptsPartial")
+}
+<script>
+    $(document).ready(function () {
+        let isDuplicate = false; // Biến kiểm tra trùng giờ
+
+        function updateGioChieuOptions() {
+            var maPhong = $("select[name='MaPhong']").val();
+            var gioChieuSelect = $("select[name='GioChieu']");
+            gioChieuSelect.empty(); // Xóa danh sách giờ cũ
+
+            if (maPhong) {
+                maPhong = parseInt(maPhong);
+                var gioChieuList = (maPhong % 2 === 0)
+                    ? ["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"]
+                    : ["07:30", "09:30", "11:30", "13:30", "15:30", "17:30", "19:30", "21:30", "23:30"];
+
+                $.each(gioChieuList, function (index, value) {
+                    gioChieuSelect.append(new Option(value, value));
+                });
+            }
+        }
+
+        $("select[name='MaPhong']").change(function () {
+            updateGioChieuOptions();
+        });
+
+        $("select[name='GioChieu'], input[name='NgayChieu'], select[name='MaPhong']").change(function () {
+            var maPhong = $("select[name='MaPhong']").val();
+            var ngayChieu = $("input[name='NgayChieu']").val();
+            var gioChieu = $("select[name='GioChieu']").val();
+            var maLichChieu = $("input[name='MaLichChieu']").val();
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var songay = $("input[name='songay']").val();
+            if (maPhong && ngayChieu && gioChieu) {
+                $.ajax({
+                    url: "/admins/LichChieus/CheckDuplicate",
+                    type: "POST",
+                    data: {
+                        maPhong: maPhong,
+                        ngayChieu: ngayChieu,
+                        gioChieu: gioChieu,
+                        maLichChieu: maLichChieu,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        if (response.isDuplicate) {
+                            console.log("Nút đã được nhấn!");
+                            alert("Giờ chiếu đã tồn tại, vui lòng chọn giờ khác!");
+                            isDuplicate = true;
+                        } else {
+                            $("#error-message").hide();
+                            isDuplicate = false;
+                        }
+                    }
+                });
+            }
+        });
+        $(".btn-success").click(function (e) {
+            if (isDuplicate) {
+                e.preventDefault(); // Chặn submit nếu trùng giờ chiếu
+                alert("Giờ chiếu đã tồn tại, vui lòng chọn giờ khác!");
+            } else {
+                submitCreateForm(); // Nếu không trùng thì gọi hàm submit
+            }
+        });
+        // Gọi khi trang tải lần đầu (nếu đã chọn phòng)
+        updateGioChieuOptions();
+    });
+</script> 

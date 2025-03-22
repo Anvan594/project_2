@@ -1,0 +1,40 @@
+﻿@model WebBanVeXemPhim.Models.Trailer
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">×</button>
+    <h3>Sửa Trailer</h3>
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaTrailer" />
+
+        <div class="form-group">
+            <label asp-for="MaPhim" class="control-label">Chọn Phim</label>
+            <select asp-for="MaPhim" class="form-control" asp-items="@(new SelectList(ViewBag.DanhSachPhim, "MaPhim", "TenPhim"))">
+                <option value="">-- Chọn phim --</option>
+            </select>
+            <span asp-validation-for="MaPhim" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DuongDanTrailer" class="control-label">Đường dẫn Trailer</label>
+            <input asp-for="DuongDanTrailer" class="form-control" placeholder="Nhập link YouTube" />
+            <span asp-validation-for="DuongDanTrailer" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MoTaTrailer" class="control-label">Mô tả Trailer</label>
+            <textarea asp-for="MoTaTrailer" class="form-control"></textarea>
+            <span asp-validation-for="MoTaTrailer" class="text-danger"></span>
+        </div>
+
+        <div class="form-group" style="padding-top:20px">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

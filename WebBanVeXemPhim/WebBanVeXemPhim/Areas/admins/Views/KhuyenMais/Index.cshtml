@@ -1,0 +1,234 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.KhuyenMai>
+
+@{
+    ViewData["Title"] = "Quản lý Khuyến Mãi";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .container {
+    display: flex;
+    transition: 0.3s;
+    }
+
+    .content {
+    flex: 1;
+    transition: 0.3s;
+    }
+
+    .content.shrink {
+    flex: 0.7;
+    }
+
+    .hienthi {
+    position: fixed;
+    top: 100px;
+    right: 0;
+    width: 29%;
+    height: 90vh;
+    background-color: #f8f9fa;
+    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.5s ease-in-out, opacity 0.3s;
+    padding: 20px;
+    opacity: 0;
+    transform: translateX(100%);
+    }
+
+    .hienthi.active {
+    transform: translateX(0);
+    opacity: 1;
+    }
+
+    .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    }
+</style>
+<h1>Quản lý Khuyến Mãi</h1>
+
+<p>
+    <button style="font-size:14px" class="btn btn-success btn-sm btnOn" onclick="loadSidebar_create()">
+        Thêm Khuyến Mãi <i class="fas fa-plus"></i>
+    </button>
+    <form method="get" asp-action="Index">
+        <input type="text" name="searchString" placeholder="Nhập tên khuyến mãi..." class="form-control"
+        style="width: 300px; display: inline-block; margin-right: 10px;"
+        value="@ViewBag.SearchString">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
+</p>
+
+<div class="container">
+    <div id="main-content" class="content full-width">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Thông Tin</th>
+                    <th>Trạng Thái</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.MaKhuyenMai">
+                        <td><img src="~/images/@item.Anh" alt="Ảnh Khuyến Mãi" width="120" height="100"></td>
+                        <td style="max-width:350px">@item.ThongTin</td>
+                        <td>@if(@item.TrangThai==true){
+                                <span style="color:green">Đang hoạt động</span>
+                            }
+                            else
+                            {
+                                <span style="color:red">Dừng hoạt động</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-sm btnOn" onclick="loadSidebar(@item.MaKhuyenMai)">
+                                Xem <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm btnOn" onclick="loadSidebar_edit(@item.MaKhuyenMai)">
+                                Sửa <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteKhuyenMai(@item.MaKhuyenMai)">
+                                Xóa <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="sidebar-container"></div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.TotalPages > 1)
+            {
+                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+
+                if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-searchString="@ViewBag.SearchString">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString">@i</a>
+                    </li>
+                }
+
+                if (endPage < ViewBag.TotalPages)
+                {
+                    @if (endPage < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages" asp-route-searchString="@ViewBag.SearchString">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+<form id="deleteForm">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    function loadSidebar(khuyenMaiId) {
+        $.ajax({
+            url: '/admins/KhuyenMais/Details/' + khuyenMaiId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+
+    function loadSidebar_create() {
+        $.ajax({
+            url: '/admins/KhuyenMais/Create',
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+        function submitCreateForm() {
+        var formData = new FormData($("#createForm")[0]);
+
+        $.ajax({
+            url: '/admins/KhuyenMais/Create',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                        location.reload();
+                } else {
+                    console.log("Lỗi ModelState từ server:", response.errors); // Hiển thị lỗi cụ thể
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr) {
+                console.log("Lỗi AJAX:", xhr.responseText);
+                toastr.error("Có lỗi xảy ra! Vui lòng thử lại.");
+            }
+        });
+    }
+    function loadSidebar_edit(khuyenMaiId) {
+        $.ajax({
+            url: '/admins/KhuyenMais/Edit/' + khuyenMaiId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active");
+                $("#main-content").addClass("shrink");
+            }
+        });
+    }
+
+    function deleteKhuyenMai(khuyenMaiId) {
+        if (!confirm("Bạn có chắc chắn muốn xóa khuyến mãi này không?")) return;
+        let token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '/admins/KhuyenMais/DeleteConfirmed',
+            type: 'POST',
+            data: { id: khuyenMaiId, __RequestVerificationToken: token },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $("#row_" + khuyenMaiId).remove();
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi xóa khuyến mãi!");
+            }
+        });
+    }
+</script>

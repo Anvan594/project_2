@@ -1,0 +1,244 @@
+﻿@model IEnumerable<WebBanVeXemPhim.Models.Phong>
+
+@{
+    ViewData["Title"] = "Danh sách phòng";
+    Layout = "~/Areas/admins/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Quản lý phòng</h1>
+
+<p>
+    <button style="font-size:14px" class="btn btn-success btn-sm btnOn" onclick="loadSidebar_create()">
+        Thêm phòng <i class="fas fa-plus"></i>
+    </button>
+    <form method="get" asp-action="Index">
+        <input type="text" name="searchString" placeholder="Nhập tên phòng..." class="form-control"
+               style="width: 300px; display: inline-block; margin-right: 10px;"
+               value="@ViewBag.SearchString">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
+</p>
+
+<div class="container">
+    <div id="main-content" class="content full-width">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên phòng</th>
+                    <th>Số lượng ghế</th>
+                    <th>Trạng thái</th>
+                    <th>Chức năng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.MaPhong">
+                        <td>@Html.DisplayFor(modelItem => item.TenPhong)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SoLuongGhe)</td>
+                        <td>
+                            @if (item.TrangThai == true)
+                            {
+                                <span style="color:green">Hoạt động</span>
+                            }
+                            else
+                            {
+                                <span style="color:red">Không hoạt động</span>
+                            }
+                        </td>
+                        <td>
+                            <button class="btn btn-info btn-sm btnOn" onclick="loadSidebar(@item.MaPhong)">
+                                Xem <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-warning btn-sm btnOn" onclick="loadSidebar_edit(@item.MaPhong)">
+                                Sửa <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm btn-delete" onclick="deletePhong(@item.MaPhong)">
+                                Xóa <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="sidebar-container"></div>
+</div>
+
+<div class="d-flex justify-content-center">
+    <nav>
+        <ul class="pagination">
+            @if (ViewBag.TotalPages > 1)
+            {
+                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+
+                if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1" asp-route-searchString="@ViewBag.SearchString">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-searchString="@ViewBag.SearchString">@i</a>
+                    </li>
+                }
+
+                if (endPage < ViewBag.TotalPages)
+                {
+                    @if (endPage < ViewBag.TotalPages - 1)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@ViewBag.TotalPages" asp-route-searchString="@ViewBag.SearchString">@ViewBag.TotalPages</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+<form id="deleteForm">
+    @Html.AntiForgeryToken()
+</form>
+<style>
+
+    .container {
+        display: flex;
+        transition: 0.3s;
+    }
+
+    /* Nội dung chính ban đầu chiếm toàn bộ màn hình */
+    .content {
+        flex: 1;
+        transition: 0.3s;
+    }
+
+        /* Khi sidebar mở, nội dung chính thu nhỏ */
+        .content.shrink {
+            flex: 0.7; /* Điều chỉnh theo ý muốn */
+        }
+
+    /* Sidebar ẩn bên phải */
+    .hienthi {
+        position: fixed;
+        top: 100px;
+        right: 0; /* Cố định ở bên phải */
+        width: 29%; /* Chiều rộng khi mở */
+        height: 90vh;
+        background-color: #f8f9fa;
+        box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.5s ease-in-out, opacity 0.3s;
+        padding: 20px;
+        opacity: 0;
+        transform: translateX(100%); /* Đẩy sidebar ra khỏi màn hình bên phải */
+    }
+
+        /* Khi sidebar mở */
+        .hienthi.active {
+            transform: translateX(0); /* Trả sidebar về vị trí ban đầu */
+            opacity: 1;
+        }
+
+    /* Nút đóng sidebar */
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+</style>
+<button hidden class="btn btn-toggle toggle-sidebar" id="btnSidebar">
+    <i class="gg-menu-right"></i>
+</button>
+
+<script>
+    function loadSidebar(phongId) {
+        $.ajax({
+            url: '/admins/Phongs/Details/' + phongId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+    function loadSidebar_create() {
+        $.ajax({
+            url: '/admins/Phongs/Create',
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+    
+
+    function loadSidebar_edit(phongId) {
+        $.ajax({
+            url: '/admins/Phongs/Edit/' + phongId,
+            type: 'GET',
+            success: function (data) {
+                $("#sidebar-container").html(data);
+                $("#hienthi").addClass("active"); // Mở sidebar
+                $("#main-content").addClass("shrink"); // Thu nhỏ nội dung chính
+            }
+        });
+    }
+    function deletePhong(phongId) {
+        if (!confirm("Bạn có chắc chắn muốn xóa phòng này không?")) return;
+        let token = $('input[name="__RequestVerificationToken"]').val();
+        $.ajax({
+            url: '/admins/Phongs/DeleteConfirmed',
+            type: 'POST',
+            data: { id: phongId, __RequestVerificationToken: token },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    $("#row_" + phongId).remove();
+                } else {
+                    alert("Lỗi: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Đã xảy ra lỗi khi xóa phòng!");
+            }
+        });
+    }
+    function closeSidebar() {
+        $("#hienthi").removeClass("active"); // Ẩn sidebar
+        $("#main-content").removeClass("shrink"); // Mở rộng lại nội dung chính
+        document.getElementById("btnSidebar").disabled = false;
+        document.getElementById("btnSidebar").click();
+
+    }
+
+    //ẩn sidebar
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".btnOn").forEach(button => {
+            button.addEventListener("click", function () {
+                let btnSidebar = document.getElementById("btnSidebar");
+
+                if (btnSidebar && !btnSidebar.disabled) {
+                    btnSidebar.click();
+                    btnSidebar.disabled = true;
+                }
+            });
+        });
+    });
+</script>

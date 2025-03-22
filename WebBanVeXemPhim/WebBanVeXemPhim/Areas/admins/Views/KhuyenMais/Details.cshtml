@@ -1,0 +1,20 @@
+﻿@model WebBanVeXemPhim.Models.KhuyenMai
+
+<div id="hienthi" class="hienthi">
+    <button class="close-btn" onclick="closeSidebar()">&times;</button>
+    <h3>Chi tiết Khuyến mãi</h3>
+    @if (Model != null)
+    {
+        <p>
+            <strong>Ảnh:</strong>
+            <br />
+            <img src="~/images/@Model.Anh" alt="Ảnh Combo" width="150" height="150" style="border: 1px solid #ccc; padding: 5px;" />
+        </p>
+
+        <p><strong>Tên Combo:</strong> @Model.ThongTin</p>
+    }
+    else
+    {
+        <p>Vui lòng chọn combo để xem chi tiết</p>
+    }
+</div>

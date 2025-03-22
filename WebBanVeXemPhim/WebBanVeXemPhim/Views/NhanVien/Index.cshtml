@@ -1,0 +1,454 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <style>
+        body {
+            font-family: 'Oswald', sans-serif !important;
+        }
+        .movie-card {
+            display: flex;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+
+            .movie-card img {
+                border-radius: 15px;
+                width: 250px;
+                height: 375px;
+                object-fit: cover;
+            }
+
+            .movie-card .movie-info {
+                margin-left: 30px;
+            }
+
+                .movie-card .movie-info b {
+                    font-size: 32px;
+                }
+
+            .movie-card .showtimes ul {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 0;
+                margin: 0;
+            }
+             .seat-selection {
+    display: flex;
+    flex-direction: column; /* Xếp hàng dọc theo thứ tự */
+    gap: 10px; /* Khoảng cách giữa các hàng */
+}
+
+.seat-row {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các ghế */
+}
+
+.seat {
+    color:white;
+    width: 45px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-color:darkgrey;
+    border: 1px solid #666;
+    cursor: pointer;
+    border-radius:5px;
+}
+.seat_vip{
+    background-color:blueviolet;
+}
+.seat:hover {
+    background-color:dimgray;
+}
+/* Định dạng ghế thường */
+.seat {
+    width: 45px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #666;
+    color: white;
+    cursor: pointer;
+    position: relative; /* Để hiển thị dấu X */
+}
+
+
+/* Ghế đã đặt */
+.seat.booked {
+    background-color: red;
+    cursor: not-allowed;
+    position: relative;
+}
+
+/* Ghế chờ thanh toán */
+.seat.pending {
+    background-color: darkorange;
+}
+.seat.booked {
+    pointer-events: none; /* Vô hiệu hóa click */
+    opacity: 0.8; /* Làm mờ ghế đã đặt để người dùng dễ nhận biết */
+    cursor: not-allowed; /* Hiển thị biểu tượng cấm click */
+}
+
+
+/* Nếu muốn vẽ dấu X chéo qua ghế */
+.seat.booked::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    top: 50%;
+    left: 0;
+    transform: rotate(45deg);
+}
+
+.seat.booked::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: black;
+    top: 50%;
+    left: 0;
+    transform: rotate(-45deg);
+}
+.seat.selected {
+    background-color: green;
+    color: white;
+}
+
+
+    </style>
+<body>
+    <div class="container my-5">
+        <div class="justify-content-center">
+            @foreach (var item in ViewBag.DanhSachPhim)
+            {
+                @if (item.TrangThai == true && item.NgayKhoiChieu.ToDateTime(TimeOnly.MinValue) <= DateTime.Now)
+                {
+                    <div class="movie-card">
+                        <div>
+                            <img src="~/images/@item.Poster" alt="@item.TenPhim" />
+                        </div>
+                        <div class="movie-info">
+                            <b>@item.TenPhim</b>
+                            <div class="showtimes">
+                                <p><strong>Ngày chiếu</strong></p>
+                                <ul>
+                                    @{
+                                        List<DateOnly> ngayDaHienThi = new List<DateOnly>();
+                                        int soNgayHienThi = 0;
+                                        DateOnly ngayHienTai = DateOnly.FromDateTime(DateTime.Now);
+                                        TimeOnly gioHienTai = TimeOnly.FromDateTime(DateTime.Now);
+                                    }
+
+                                    @foreach (var lc in ViewBag.danhSachLichChieu)
+                                    {
+                                        if (lc.MaPhim == item.MaPhim && (lc.NgayChieu == ngayHienTai && lc.GioChieu > gioHienTai))
+                                        {
+                                            <span style="font-size:30px">@lc.NgayChieu.ToString("dd/MM")</span>
+                                            break;
+                                        }
+                                    }
+                                </ul>
+                                <hr />
+                                <p><strong>Giờ chiếu</strong></p>
+                                <ul>
+                                    @foreach (var lc in ViewBag.danhSachLichChieu)
+                                    {
+                                        if (lc.MaPhim == item.MaPhim && lc.NgayChieu == DateOnly.FromDateTime(DateTime.Now) && lc.GioChieu >= TimeOnly.FromDateTime(DateTime.Now))
+                                        {
+                                            <li class="text-center d-block gio-chieu ngay-@lc.NgayChieu.ToString("yyyy-MM-dd")"
+                                                style="width:130px;padding:0 8px 0 10px ;margin-right: 30px;">
+                                                <button style="width:120px;border:none;margin-right:10px"
+                                                        onclick="openBookingModal(@lc.MaLichChieu)">
+                                                    <span style="font-size:25px">@lc.GioChieu.ToString("HH:mm")</span>
+                                                </button>
+                                                <p>@lc.TongGheTrong ghế trống</p>
+                                            </li>
+                                                <div class="modal fade" id="bookingModal_@lc.MaLichChieu" tabindex="-1" aria-labelledby="bookingModal_@lc.MaLichChieu" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" style="max-height:800px;max-width: 1000px;margin-top:0px; background: rgba(0, 0, 0, 0.8)">
+                                                    <!-- Sử dụng modal-lg để tránh lỗi hiển thị -->
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3 class="modal-title">Chọn Ghế & Thanh Toán </h3>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                       
+                                                        <div class="modal-body">
+                                                            <p style="font-size:25px">Chọn ghế bạn muốn đặt:</p>
+
+                                                            <div class="d-flex"style="user-select: none;">
+                                                                <!-- Cột bên trái: Ghế -->
+                                                                <div class="seat-container " style="flex: 2; max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                                                                    <div class="screen text-center" style="position: relative; width: 60%; height: 30px; display: flex;text-align:center; justify-content: center; align-items: center; margin-bottom: 20px;">
+                                                                        <div style="position: absolute; top: 0; left: 50%; width: 100%; height: 10px; background: transparent; border-top: 5px solid #ccc; border-radius: 50% / 100% 100% 0 0; transform: translateX(-25%);">Màn hình</div>
+                                                                    </div>
+                                                                    @{
+                                                                        string currentRow = "";
+                                                                        var danhSachGhe = ((IEnumerable<dynamic>)ViewBag.DanhSachGhe)
+                                                                            .OrderBy(g => g.SoGhe[0])  
+                                                                            .ThenBy(g => int.Parse(g.SoGhe.Substring(1)))
+                                                                            .ToList();
+                                                                    }
+
+                                                                    <div class="seat-selection" data-malichchieu="@lc.MaLichChieu">
+                                                                        @foreach (var ghe in danhSachGhe)
+                                                                        {
+                                                                            string row = ghe.SoGhe.Substring(0, 1);
+
+                                                                            if (row != currentRow)
+                                                                            {
+                                                                                if (!string.IsNullOrEmpty(currentRow))
+                                                                                {
+                                                                                    @:</div>
+                                                                                }
+
+                                                                                @:<div class="seat-row">
+                                                                                currentRow = row;
+                                                                            }
+
+                                                                            @if (ghe.MaPhong == lc.MaPhong)
+                                                                            {
+                                                                                var checkGhe = 1;
+                                                                                @foreach (var ve in ViewBag.DanhSachVe)
+                                                                                {
+                                                                                    @if (lc.MaLichChieu == ve.MaLichChieu && ghe.SoGhe == ve.SoGhe && ve.TrangThai == true)
+                                                                                    {
+                                                                                       <button style="cursor:no-drop ;"  class="seat booked " data-seat="@ve.SoGhe">@ve.SoGhe</button>
+                                                                                        checkGhe = 0;
+                                                                                    }
+                                                                                    @if (lc.MaLichChieu == ve.MaLichChieu && ghe.SoGhe == ve.SoGhe && ve.TrangThai == false)
+                                                                                    {
+                                                                                        <button style="background-color:darkorange;color:white;cursor:no-drop;pointer-events: none;" class="seat new_booked" data-seat="@ve.SoGhe">@ve.SoGhe</button>
+                                                                                        checkGhe = 0;
+                                                                                        @* new_booked *@
+                                                                                    }
+                                                                                   
+                                                                                }
+                                                                                if (checkGhe == 1)
+                                                                                {
+                                                                                    if (ghe.LoaiGhe == "VIP")
+                                                                                    {
+                                                                                        <button data-maGhe="@lc.MaLichChieu" class="seat seat_vip" data-seat-ma="@ghe.MaGhe" data-price="@lc.GiaVe" data-seat="@ghe.SoGhe">@ghe.SoGhe</button> 
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <button data-maGhe="@lc.MaLichChieu" class="seat" data-seat-ma="@ghe.MaGhe" data-seat="@ghe.SoGhe" data-price="@lc.GiaVe">@ghe.SoGhe</button> 
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        @if (!string.IsNullOrEmpty(currentRow))
+                                                                        {
+                                                                            @:</div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Cột bên phải: Thanh toán -->
+                                                                <div class="payment-container ms-4 p-3 border rounded" style="flex: 1;">
+
+                                                                   <p class="mt-3" style="font-size:16px">Tổng tiền: <span class="totalPrice_@lc.MaLichChieu">0</span></p>
+
+                                                                    <div class="modal-footer"  style="margin-top: auto;">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                                        <button type="button" class="btn btn-success confirmBooking"  data-malichchieu="@lc.MaLichChieu">Xác nhận thanh toán</button>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer" style="display: flex; justify-content: center; align-items: center; gap: 15px;">
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: blueviolet;border: 1px solid #666;border-radius:5px;"></span>
+                                                                <span>Ghế VIP</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: darkgrey;border: 1px solid #666;border-radius:5px;"></span> 
+                                                                <span>Ghế Thường</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: red;border: 1px solid #666;border-radius:5px;"></span>
+                                                                <span>Đã Đặt</span>
+                                                            </div>
+
+                                                            <div style="display: flex; align-items: center; gap: 5px;">
+                                                                <span style="color:white;width: 45px;height: 40px;text-align: center;line-height: 40px;
+                                                                background-color: darkorange;border: 1px solid #666;border-radius:5px;"></span> 
+                                                                <span>Chờ Thanh Toán</span>
+                                                            </div>
+                                                        </div>
+
+                                                        
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+            function openBookingModal(MaLichChieu) {
+        var bookingModalElement = document.getElementById("bookingModal_" + MaLichChieu);
+
+        var bookingModal = new bootstrap.Modal(bookingModalElement);
+        bookingModal.show();
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+    let totalPrices = {}; // Lưu tổng tiền theo từng lịch chiếu
+
+    document.querySelectorAll(".seat").forEach(seat => {
+        seat.addEventListener("click", function () {
+            // Ngăn chặn click vào ghế đã đặt
+            if (this.classList.contains("booked")) {
+                alert("Ghế này đã được đặt. Vui lòng chọn ghế khác.");
+                return;
+            }
+            if (this.classList.contains("new_booked")) {
+                alert("Ghế này đang chờ thanh toán. Vui lòng chọn ghế khác.");
+                return;
+            }
+            let price = parseInt(this.getAttribute("data-price")) || 0;
+
+            if (this.classList.contains("seat_vip")) {
+                price += 5000; // Cộng thêm 5000 cho ghế VIP
+            }
+
+            
+            let seatSelection = this.closest(".seat-selection");
+            let maLichChieu = seatSelection ? seatSelection.getAttribute("data-malichchieu") : "default";
+            let totalPriceEl = document.querySelector(`.totalPrice_${maLichChieu}`);
+
+            if (totalPriceEl) {
+                if (!totalPrices[maLichChieu]) {
+                    totalPrices[maLichChieu] = 0;
+                }
+
+                // Đảo trạng thái ghế: Chọn thì cộng tiền, bỏ chọn thì trừ tiền
+                if (this.classList.contains("selected")) {
+                    totalPrices[maLichChieu] -= price;
+                    this.classList.remove("selected");
+                    this.style.backgroundColor = this.classList.contains("seat_vip") ? "blueviolet" : "darkgrey";
+                } else {
+                    totalPrices[maLichChieu] += price;
+                    this.classList.add("selected");
+                    this.style.backgroundColor = "green"; // Đổi màu ghế khi được chọn
+                }
+
+                totalPriceEl.innerText = totalPrices[maLichChieu].toLocaleString() + " VNĐ";
+            }
+        });
+    });
+
+    // Reset trạng thái khi đóng modal
+    document.querySelectorAll("[id^='ticketModal_']").forEach(modal => {
+        modal.addEventListener("hidden.bs.modal", function () {
+            // Reset tất cả các ghế về trạng thái ban đầu
+            document.querySelectorAll(".seat.selected").forEach(seat => {
+                seat.classList.remove("selected");
+                seat.style.backgroundColor = seat.classList.contains("seat_vip") ? "blueviolet" : "darkgrey";
+            });
+
+            // Reset tổng tiền về 0
+            document.querySelectorAll("[class^='totalPrice_']").forEach(priceEl => {
+                priceEl.innerText = "0 VNĐ";
+            });
+
+            totalPrices = {}; // Xóa tất cả giá trị đã lưu
+        });
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".confirmBooking").forEach(button => {
+        button.addEventListener("click", function () {
+            let maLichChieu = this.getAttribute("data-malichchieu");
+            let selectedSeats = document.querySelectorAll(`.seat.selected[data-maGhe='${maLichChieu}']`);
+            let maxSeats = 101;
+
+            if (selectedSeats.length === 0) {
+                alert("Bạn chưa chọn ghế!");
+                return;
+            }
+
+            if (selectedSeats.length > maxSeats) {
+                alert(`Bạn chỉ được đặt tối đa ${maxSeats} ghế.`);
+                return;
+            }
+
+            let seatNumbers = [];
+            let seatNumbers_ghe = [];
+            let totalPrice = 0;
+
+            selectedSeats.forEach(seat => {
+                let seatNumber = seat.getAttribute("data-seat-ma"); // Mã ghế trong DB
+                let seatNumber_ghe = seat.getAttribute("data-seat"); // Số ghế hiển thị
+                let seatPrice = parseInt(seat.getAttribute("data-price")) || 0;
+
+                if (seat.classList.contains("seat_vip")) {
+                    seatPrice += 5000; // Cộng thêm 5000 cho ghế VIP
+                }
+
+                seatNumbers.push(seatNumber); // Đúng định dạng
+                seatNumbers_ghe.push(seatNumber_ghe);
+                totalPrice += seatPrice;
+            });
+
+            console.log("Lịch chiếu:", maLichChieu, "Ghế:", seatNumbers, "Số ghế:", seatNumbers_ghe, "Tổng tiền:", totalPrice);
+
+                    $.ajax({
+                        url: "/DatVe/XacNhanDatVe",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            maLichChieu: maLichChieu,
+                            seats: seatNumbers, // Đúng định dạng
+                            soSeats: seatNumbers.length, // Số ghế đã chọn
+                            totalPrice: totalPrice
+                        }),
+                        success: function(response) {
+                            if (response.ticketIds && response.ticketIds.length > 0) {
+                                //alert("Đặt vé thành công! Mã vé: " + response.ticketIds.join(", "));
+                                console.log("oderid được gửi di:",response.ticketIds[0])
+                               window.location.href = "/DatVe/index?orderId=" + response.ticketIds[0];
+                               
+                            } else {
+                                alert("Đặt vé thất bại! Vui lòng thử lại.");
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Lỗi:", error);
+                            console.log("Chi tiết lỗi:", xhr.responseText);
+                            alert("Có lỗi xảy ra khi đặt vé. Vui lòng thử lại!");
+                        }
+                    });
+        });
+    });
+});
+    </script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Chi tiết phim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var phim = ViewBag.DanhSachPhim;
+    var trailer = ViewBag.DanhSachTrailer;
+    string embedUrl = "";
+    string ExtractYouTubeId(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return "";
+        var match = System.Text.RegularExpressions.Regex.Match(url, @"(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/))([a-zA-Z0-9_-]+)");
+        return match.Success ? match.Groups[1].Value : "";
+    }
+
+    if (trailer != null && !string.IsNullOrEmpty(trailer.DuongDanTrailer))
+    {
+        string videoId = ExtractYouTubeId(trailer.DuongDanTrailer);
+        if (!string.IsNullOrEmpty(videoId))
+        {
+            embedUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1&rel=0";
+        }
+    }
+}
+<style>
+    .embed-responsive {
+        position: relative;
+        display: block;
+        width: 60%;
+        padding: 0;
+        overflow: hidden;
+    }
+
+        .embed-responsive::before {
+            display: block;
+            content: "";
+        }
+
+    .embed-responsive-16by9::before {
+        padding-top: 56.25%;
+    }
+
+    .embed-responsive-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+    strong{
+        font-size:22px
+    }
+</style>
+<body>
+    <div class="mt-5">
+        @if (phim != null)
+        {
+            <div class="d-flex justify-content-center">
+                <div class="m-4 d-flex align-items-start" style="width: 80%;">
+                    <!-- Hình ảnh -->
+                    <div style="margin-right: 30px;">
+                        <img style="border-radius: 25px; width: 300px;" src="~/images/@phim.Poster" alt="Alternate Text" />
+                    </div>
+
+                    <!-- Thông tin phim -->
+                    <div style="font-size: 20px; font-family: SourceSansPro !important;">
+                        <b class="mb-3 d-block" style="font-size: 35px;font-family: Oswald !important;">@phim.TenPhim</b>
+                        <strong>Mô Tả: </strong>@phim.MoTa<br />
+                        <strong>Đạo diễn: </strong> @phim.DaoDien<br />
+                        <strong>Diễn viên: </strong> @phim.DienVien<br />
+                        <strong>Thể loại: </strong> @phim.TheLoai<br />
+                        <strong>Ngôn ngữ: </strong> @phim.NgonNgu<br />
+                        <strong>Ngày khởi chiếu: </strong> @phim.NgayKhoiChieu.ToString("dd/MM/yyyy")
+                    </div>
+
+                </div>
+            </div>
+
+            
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                Không tìm thấy phim có mã này.
+            </div>
+        }
+        <hr />
+        @if (trailer != null)
+        {
+            <div class="d-flex flex-column justify-content-center align-items-center text-center" >
+                <div style="width: 130px;">
+                    <h1 class="m-4" style="border-bottom: 4px solid transparent;border-image: linear-gradient(to right, #39adf0 0%, #075fa3 100%);
+                                border-image-slice: 1;border-width: 0px 0px 4px 0px;width:150px;padding-bottom:5px;">
+                        Trailer
+                    </h1>
+                </div>
+
+                <div class="embed-responsive embed-responsive-16by9 mb-3" style="width: 80%; max-width: 1000px;height:500px">
+                    <iframe class="embed-responsive-item" src="@embedUrl" allowfullscreen></iframe>
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="alert alert-info">
+                Không tìm thấy trailer cho phim này.
+            </div>
+        }
+
+    </div>
+</body>
+
