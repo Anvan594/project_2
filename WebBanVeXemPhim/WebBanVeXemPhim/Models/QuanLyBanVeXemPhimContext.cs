@@ -44,7 +44,7 @@ public partial class QuanLyBanVeXemPhimContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-GHP029P\\SQLEXPRESS;Database=QuanLyBanVeXemPhim_v2;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("workstation id=QuanLyWebBanVeXemPhim_v2.mssql.somee.com;packet size=4096;user id=VanAn2003_SQLLogin_1;pwd=An0327762985;data source=QuanLyWebBanVeXemPhim_v2.mssql.somee.com;persist security info=False;initial catalog=QuanLyWebBanVeXemPhim_v2;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

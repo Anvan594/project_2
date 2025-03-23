@@ -1,0 +1,335 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WebBanVeXemPhim
+build_property.RootNamespace = WebBanVeXemPhim
+build_property.ProjectDir = C:\Users\An\Documents\GitHub\project_2\WebBanVeXemPhim\WebBanVeXemPhim\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\An\Documents\GitHub\project_2\WebBanVeXemPhim\WebBanVeXemPhim
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Banners/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhbm5lcnNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Banners/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhbm5lcnNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Banners/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhbm5lcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Banners/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhbm5lcnNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Banners/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhbm5lcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/BaoCao/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEJhb0Nhb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Comboes/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXENvbWJvZXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Comboes/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXENvbWJvZXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Comboes/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXENvbWJvZXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Comboes/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXENvbWJvZXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Comboes/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXENvbWJvZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEhvbWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/KhuyenMais/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEtodXllbk1haXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/KhuyenMais/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEtodXllbk1haXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/KhuyenMais/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEtodXllbk1haXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/KhuyenMais/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEtodXllbk1haXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/KhuyenMais/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXEtodXllbk1haXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/LichChieus/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExpY2hDaGlldXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/LichChieus/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExpY2hDaGlldXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/LichChieus/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExpY2hDaGlldXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/LichChieus/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExpY2hDaGlldXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/LichChieus/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExpY2hDaGlldXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXExvZ2luXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/NguoiDungs/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXE5ndW9pRHVuZ3NcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/NguoiDungs/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXE5ndW9pRHVuZ3NcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/NguoiDungs/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXE5ndW9pRHVuZ3NcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/NguoiDungs/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXE5ndW9pRHVuZ3NcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/NguoiDungs/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXE5ndW9pRHVuZ3NcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phims/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBoaW1zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phims/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBoaW1zXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phims/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBoaW1zXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phims/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBoaW1zXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phims/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBoaW1zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phongs/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBob25nc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phongs/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBob25nc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phongs/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBob25nc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phongs/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBob25nc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Phongs/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFBob25nc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Shared/_LayoutAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFNoYXJlZFxfTGF5b3V0QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Shared/_Link.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFNoYXJlZFxfTGluay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Shared/_NavBar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFNoYXJlZFxfTmF2QmFyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Shared/_Preloader.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFNoYXJlZFxfUHJlbG9hZGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Shared/_SideBar.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFNoYXJlZFxfU2lkZUJhci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/TaiKhoanAdmins/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRhaUtob2FuQWRtaW5zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/TaiKhoanAdmins/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRhaUtob2FuQWRtaW5zXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/TaiKhoanAdmins/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRhaUtob2FuQWRtaW5zXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/TaiKhoanAdmins/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRhaUtob2FuQWRtaW5zXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/TaiKhoanAdmins/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRhaUtob2FuQWRtaW5zXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/ThanhToans/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRoYW5oVG9hbnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Trailers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRyYWlsZXJzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Trailers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRyYWlsZXJzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Trailers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRyYWlsZXJzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Trailers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRyYWlsZXJzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Trailers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFRyYWlsZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/Ves/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXFZlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Areas/admins/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYWRtaW5zXFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/ChiTietPhim/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2hpVGlldFBoaW1cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/DangKy/DangKy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFuZ0t5XERhbmdLeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/DatVe/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0VmVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/DatVe/ThongTinVe.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0VmVcVGhvbmdUaW5WZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Home/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxIb21lLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Home/VeDaDat.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxWZURhRGF0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/KhuyenMais/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2h1eWVuTWFpc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Login/DangKy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cRGFuZ0t5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Login/QuenMatKhau.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cUXVlbk1hdEtoYXUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/NhanVien/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhblZpZW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/NhanVien/InVe.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhblZpZW5cSW5WZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Shared/Components/Header/ThongBao.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcSGVhZGVyXFRob25nQmFvLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/An/Documents/GitHub/project_2/WebBanVeXemPhim/WebBanVeXemPhim/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-0qeywdkmgf

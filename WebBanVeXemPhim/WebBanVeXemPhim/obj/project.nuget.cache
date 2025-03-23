@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "+UL1h57GD4M=",
+  "dgSpecHash": "0d8h1CxwFdM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\An\\Documents\\GitHub\\DoAnTotNgiep\\WebBanVeXemPhim\\WebBanVeXemPhim\\WebBanVeXemPhim.csproj",
+  "projectFilePath": "C:\\Users\\An\\Documents\\GitHub\\project_2\\WebBanVeXemPhim\\WebBanVeXemPhim\\WebBanVeXemPhim.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\An\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\An\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
