@@ -8,11 +8,11 @@ using WebBanVeXemPhim.Models;
 
 namespace WebBanVeXemPhim.Areas.admins.Controllers
 {
-    public class NguoiDungsController : BaseController
+    public class NhanViensController : BaseController
     {
         private readonly QuanLyBanVeXemPhimContext _context;
 
-        public NguoiDungsController(QuanLyBanVeXemPhimContext context)
+        public NhanViensController(QuanLyBanVeXemPhimContext context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace WebBanVeXemPhim.Areas.admins.Controllers
         {
             int pageSize = 5;
             var query = _context.NguoiDungs
-                .Where(n => n.Token.Trim() != "Nhan Vien")
+                .Where(n => n.Token.Trim() == "Nhan Vien")
                 .OrderByDescending(n => n.TrangThai) // Đang hoạt động (1) trước, không hoạt động (0) sau
                 .ThenByDescending(n => n.MaNguoiDung) // Sau đó tiếp tục sắp xếp theo MaNguoiDung
                 .AsQueryable();
@@ -32,7 +32,7 @@ namespace WebBanVeXemPhim.Areas.admins.Controllers
                 query = query.Where(u => u.TenNguoiDung.Contains(searchString));
             }
 
-            var danhSachNguoiDung = await query.OrderByDescending(u => u.MaNguoiDung)
+            var danhSachNguoiDung = await query.OrderBy(u => u.MaNguoiDung)
                                                .Skip((page - 1) * pageSize)
                                                .Take(pageSize)
                                                .ToListAsync();
